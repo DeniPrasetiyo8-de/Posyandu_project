@@ -73,6 +73,7 @@
             <!-- Posyandu 1 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-pink-100 hover:border-pink-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-pink-400 to-pink-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+                    <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-seedling text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-pink-600 transition-colors">Posyandu Mawar</h3>
@@ -86,13 +87,14 @@
                     </span>
                 </div>
                 <a href="https://www.google.com/maps/search/?api=" class="w-full bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 px-6 rounded-2xl font-bold text-center block hover:from-pink-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <i class="fas fa-directions mr-2"></i>Lihat Detail
+                    <i class="fas fa-directions mr-2"></i>Lihat Lokasi
                 </a>
             </div>
 
             <!-- Posyandu 2 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-blue-100 hover:border-blue-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-flower-tulip text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-blue-600 transition-colors">Posyandu Melati</h3>
@@ -106,13 +108,14 @@
                     </span>
                 </div>
                 <a href="https://www.google.com/maps/search/?api=" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 px-6 rounded-2xl font-bold text-center block hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <i class="fas fa-directions mr-2"></i>Lihat Detail
+                    <i class="fas fa-directions mr-2"></i>Lihat Lokasi
                 </a>
             </div>
 
             <!-- Posyandu 3 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-purple-100 hover:border-purple-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-spa text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-purple-600 transition-colors">Posyandu Anggrek</h3>
@@ -126,13 +129,14 @@
                     </span>
                 </div>
                 <a href="https://www.google.com/maps/search/?api=" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 px-6 rounded-2xl font-bold text-center block hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <i class="fas fa-directions mr-2"></i>Lihat Detail
+                    <i class="fas fa-directions mr-2"></i>Lihat Lokasi
                 </a>
             </div>
 
             <!-- Posyandu 4 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-green-100 hover:border-green-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-blue-400 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-leaf text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-green-600 transition-colors">Posyandu Daun</h3>
@@ -146,13 +150,14 @@
                     </span>
                 </div>
                 <a href="https://www.google.com/maps/search/?api=" class="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-4 px-6 rounded-2xl font-bold text-center block hover:from-green-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <i class="fas fa-directions mr-2"></i>Lihat Detail
+                    <i class="fas fa-directions mr-2"></i>Lihat Lokasi
                 </a>
             </div>
 
             <!-- Posyandu 5 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-yellow-100 hover:border-yellow-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-sun-plant-wilt text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-yellow-600 transition-colors">Posyandu Matahari</h3>
@@ -166,13 +171,14 @@
                     </span>
                 </div>
                 <a href="https://www.google.com/maps/search/?api=" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 px-6 rounded-2xl font-bold text-center block hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <i class="fas fa-directions mr-2"></i>Lihat Detail
+                    <i class="fas fa-directions mr-2"></i>Lihat Lokasi
                 </a>
             </div>
 
             <!-- Posyandu 6 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-indigo-100 hover:border-indigo-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-dove text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-indigo-600 transition-colors">Posyandu Merpati</h3>
@@ -186,7 +192,7 @@
                     </span>
                 </div>
                 <a href="https://www.google.com/maps/search/?api=" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-4 px-6 rounded-2xl font-bold text-center block hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <i class="fas fa-directions mr-2"></i>Lihat Detail
+                    <i class="fas fa-directions mr-2"></i>Lihat Lokasi
                 </a>
             </div>
         </div>
@@ -264,6 +270,7 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div class="bg-gradient-to-r from-pink-400 to-blue-400 rounded-3xl p-12 shadow-2xl">
             <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
+                <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                 <i class="fas fa-heart-broken text-pink-500 text-4xl"></i>
             </div>
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
