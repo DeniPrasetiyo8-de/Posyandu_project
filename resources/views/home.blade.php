@@ -139,8 +139,8 @@
                      <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-leaf text-white text-2xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-green-600 transition-colors">Posyandu Daun</h3>
-                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Daun No. 12, Kel. Subur, Kec. Utara</p>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-green-600 transition-colors">Posyandu Bintang</h3>
+                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Bintang No. 12, Kel. Kejora, Kec. Utara</p>
                 <div class="flex items-center justify-center space-x-4 mb-6 text-sm">
                     <span class="flex items-center text-green-600">
                         <i class="fas fa-clock mr-1"></i> Setiap Senin 09.00
@@ -181,8 +181,8 @@
                      <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-dove text-white text-2xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-indigo-600 transition-colors">Posyandu Merpati</h3>
-                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Merpati No. 89, Kel. Damai, Kec. Tengah</p>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-indigo-600 transition-colors">Posyandu Bulan</h3>
+                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Bulan No. 89, Kel. Purnama Kec. Tengah</p>
                 <div class="flex items-center justify-center space-x-4 mb-6 text-sm">
                     <span class="flex items-center text-green-600">
                         <i class="fas fa-clock mr-1"></i> Setiap Sabtu 09.30

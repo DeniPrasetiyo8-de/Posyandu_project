@@ -91,7 +91,7 @@
             <div class="text-center mt-8 pt-8 border-t border-white/20">
                 <p class="text-white/80">
                     Belum punya akun? 
-                    <a href="/register" class="font-bold text-pink-200 hover:text-pink-100 transition-colors">Daftar sekarang</a>
+                    <a href="#register-tab" class="font-bold text-pink-200 hover:text-pink-100 transition-colors">Daftar sekarang</a>
                 </p>
             </div>
         </div>
@@ -215,29 +215,58 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const formContainers = document.querySelectorAll('.form-container');
     
-    tabButtons.forEach((button, index) => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            tabButtons.forEach(btn => {
-                btn.classList.remove('tab-active');
-                btn.classList.add('text-white/70');
-            });
-            
-            formContainers.forEach(container => {
-                container.classList.add('hidden');
-                container.classList.remove('tab-content-active');
-            });
-            
-            this.classList.add('tab-active');
-            this.classList.remove('text-white/70');
-            
-            const targetTab = this.getAttribute('href').substring(1);
-            const targetContainer = document.getElementById(targetTab);
+    // Fungsi untuk switch tab
+    function switchTab(targetId) {
+        // Reset semua tab buttons
+        tabButtons.forEach(btn => {
+            btn.classList.remove('tab-active');
+            btn.classList.add('text-white/70');
+            btn.style.background = '';
+            btn.style.color = '';
+        });
+        
+        // Reset semua form containers
+        formContainers.forEach(container => {
+            container.classList.add('hidden');
+            container.classList.remove('tab-content-active');
+        });
+        
+        // Aktifkan tab yang dipilih
+        const activeButton = document.querySelector(`[href="#${targetId}"]`);
+        if (activeButton) {
+            activeButton.classList.add('tab-active');
+            activeButton.classList.remove('text-white/70');
+        }
+        
+        // Tampilkan form yang dipilih
+        const targetContainer = document.getElementById(targetId);
+        if (targetContainer) {
             targetContainer.classList.remove('hidden');
             targetContainer.classList.add('tab-content-active');
+        }
+    }
+    
+    // Event listener untuk tab buttons
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            switchTab(targetId);
         });
     });
+    
+    // Event listener untuk link "Daftar sekarang" dan "Masuk sekarang"
+    const switchLinks = document.querySelectorAll('a[href="#login-tab"], a[href="#register-tab"]');
+    switchLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            switchTab(targetId);
+        });
+    });
+    
+    // Set default tab (login) saat halaman load
+    switchTab('login-tab');
 });
 </script>
 
