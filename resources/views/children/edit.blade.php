@@ -11,22 +11,35 @@
             <p class="text-xl text-slate-300">Perbarui informasi {{ $child->nama }}</p>
         </div>
 
-        <form action="{{ route('children.update', $child->id) }}" method="POST" enctype="multipart/form-data" class="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-10 border border-slate-700 shadow-2xl">
+<form action="{{ route('children.update', $child->id) }}" method="POST" enctype="multipart/form-data" class="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-10 border border-slate-700 shadow-2xl">
             @csrf
             @method('PUT')
             
             <!-- Foto Preview -->
-            <div class="mb-12 text-center">
-                @if($child->foto_url)
-                    <img src="{{ $child->foto_url }}" alt="Foto {{ $child->nama }}" class="w-48 h-48 rounded-full mx-auto object-cover shadow-2xl mb-4 border-4 border-yellow-400">
-                    <p class="text-slate-400 text-lg">Foto saat ini</p>
-                @else
-                    <div class="w-48 h-48 bg-slate-700 rounded-full mx-auto flex items-center justify-center text-slate-500 text-2xl mb-4">
-                        <i class="fas fa-user-child"></i>
-                    </div>
-                    <p class="text-slate-400 text-lg">Belum ada foto</p>
-                @endif
+            @if($child->foto_url)
+                <img src="{{ $child->foto_url }}" alt="Foto {{ $child->nama }}" class="w-48 h-48 rounded-full mx-auto object-cover shadow-2xl mb-4 border-4 border-yellow-400">
+                <p class="text-slate-400 text-lg">Foto saat ini</p>
+            @else
+                <div class="w-48 h-48 bg-slate-700 rounded-full mx-auto flex items-center justify-center text-slate-500 text-2xl mb-4">
+                    <i class="fas fa-user-child"></i>
+                </div>
+                <p class="text-slate-400 text-lg">Belum ada foto</p>
+            @endif
+        
+        <!-- Move the photo preview section to a clearer position - adding NIK here -->
+            <!-- NIK -->
+            <div class="mb-8">
+                <label class="block text-white font-bold mb-4 text-xl">NIK</label>
+                <input type="text" name="nik" value="{{ old('nik', $child->nik) }}" 
+                       class="w-full p-5 rounded-2xl bg-slate-700/50 border-2 border-slate-600 text-white text-lg focus:border-yellow-500 focus:ring-4 focus:ring-yellow-500/20 transition-all @error('nik') border-red-500 @enderror"
+                       placeholder="Masukkan NIK (16 digit)">
+                @error('nik')
+                    <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
+                @enderror
             </div>
+
+            <!-- Foto Preview was moved up -->
+            <div class="mb-12 text-center">
 
             <!-- Nama -->
             <div class="mb-8">
@@ -60,7 +73,7 @@
             <!-- Tanggal Lahir -->
             <div class="mb-8">
                 <label class="block text-white font-bold mb-4 text-xl">Tanggal Lahir</label>
-                <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $child->tanggal_lahir) }}" max="{{ date('Y-m-d') }}"
+                <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $child->tanggal_lahir ? date('Y-m-d', strtotime($child->tanggal_lahir)) : '') }}" max="{{ date('Y-m-d') }}"
                        class="w-full p-5 rounded-2xl bg-slate-700/50 border-2 border-slate-600 text-white text-lg focus:border-yellow-500 focus:ring-4 focus:ring-yellow-500/20 transition-all @error('tanggal_lahir') border-red-500 @enderror">
                 @error('tanggal_lahir')
                     <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
@@ -81,7 +94,7 @@
             <!-- Tinggi Badan -->
             <div class="mb-8">
                 <label class="block text-white font-bold mb-4 text-xl">Tinggi Badan Saat Ini (Cm)</label>
-                <input type="number" name="tinggi_badan" step="0.1" value="{{ old('tinggi_badan', $child->tinggi_badan) }}" min="0"
+                <input type="number" name="tinggi_badan" step="0.1" value="{{ old('tinggi_badan', $child->tinggi_badan ?? '') }}" min="0"
                        class="w-full p-5 rounded-2xl bg-slate-700/50 border-2 border-slate-600 text-white text-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all @error('tinggi_badan') border-red-500 @enderror"
                        placeholder="0.0">
                 @error('tinggi_badan')

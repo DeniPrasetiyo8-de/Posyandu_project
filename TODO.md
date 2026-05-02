@@ -1,40 +1,46 @@
-# TASK: Implementasi CRUD Informasi Anak + KMS Otomatis (Bahasa Indonesia)
+# TASK BARU: Informasi Ibu + KMS Gabungan
 
-## Plan Approved: Ya, dengan UI dalam Bahasa Indonesia
+## Fitur yang akan ditambahkan:
 
-### 1. Database Migration [DONE]
-   - File dibuat: database/migrations/2024_11_01_000000_add_details_to_children_table.php
-   - **Jalankan: `php artisan migrate`** untuk apply kolom baru
-   - Kolom: jenis_kelamin(ENUM L/P), berat_badan(DECIMAL), tinggi_badan(DECIMAL), foto(STRING)
+### 1. Tambah NIK di Informasi Anak
+   - Update migration children table: tambah kolom nik
+   - Update Model Child: fillable + accessor
+   - Update form create/edit anak: input NIK
 
-### 2. Update Models [DONE]
-   - Child.php: fillable lengkap + casts + umurBulan + fotoUrl accessor
-   - HealthRecord.php: Sudah OK (fields ada di migration/view)
+### 2. Buat CRUD Informasi Ibu (Baru)
+   - Migration: buat table ibu (user_id, nik, nama_lengkap, jenis_kelamin (P), tanggal_kehamilan, berat_badan, foto)
+   - Model Ibu baru
+   - Controller IbuController
+   - View informasi-ibu dengan CRUD lengkap + foto profil
+   - Route
 
-### 3. Update Controllers [DONE]
-   - ChildController.php: Middleware auth ✅, index user-specific ✅, photo upload store/update ✅, validasi baru ✅ (Bahasa ID)
-   - DashboardController.php: kms sudah user-specific, gizi calc nanti di view/charts
+### 3. KMS untuk Ibu (Baru)
+   - Calculate status kesehatan dari berat badan & tanggal kehamilan
+   - Diagram: Sehat vs Perlu Pemeriksaan
+   - Ambil data dari table ibu
 
-### 4. Update Forms CRUD [DONE]
-   - children/create.blade.php: UI modern Tailwind, semua fields + photo preview, validasi ID ✅
-   - children/edit.blade.php: Sama + preview foto lama ✅
-   - Error messages Bahasa ID siap dari controller
+### 4. KMS Gabungan (Update)
+   - Fitur pilih: KMS Anak atau KMS Ibu
+   - Tampilkan diagram sesuai pilihan
 
-### 5. Update Dashboard Views [DONE]
-   - informasi-anak.blade.php: Foto ✅, berat/tinggi/umur ✅, tombol hapus ✅ (+ button tetap)
-   - kms.blade.php: Hapus tambah anak ✅, selector anak ✅, Chart.js growth + gizi pie ✅, auto dari Child/HealthRecord
+## Langkah Implementasi:
 
-### 6. Routes & Polish [DONE]
-   - routes/web.php: Duplicate removed, auth middleware OK ✅
-   - children/index.blade.php: Modern table w/ foto, berat/tinggi, CRUD buttons ✅
+#### Step 1: Migration + Model Anak (NIK)
+- Tambah kolom nik di children
 
-### 7. Testing & Deploy [DONE]
-   - **JALANKAN: php artisan migrate** (untuk kolom baru children)
-   - Semua fitur CRUD siap test di /informasi-anak (+ button → create/edit/delete)
-   - KMS auto charts dari data anak, selector multiple anak
-   - **php artisan storage:link && php artisan optimize:clear** untuk foto
+#### Step 2: Buat Table Ibu
+- Migration: create_mothers_table
+- Model Mother
+- Controller MotherController (CRUD)
 
-**TASK SELESAI! Semua perubahan sesuai request: CRUD lengkap informasi anak (fields + foto), KMS auto tanpa tombol tambah, diagram gizi baik/buruk.**
+#### Step 3: View CRUD Ibu
+- create.blade.php mother
+- edit.blade.php mother
+- Dashboard informasi-ibu
 
-Progress: 7/7 completed ✅
+#### Step 4: KMS Gabungan
+- Update kms.blade.php dengan selector
+- Logic diagram calculate
+- Tampilkan chart untuk anak/ibu
 
+## Status: MULAI IMPLEMENTASI

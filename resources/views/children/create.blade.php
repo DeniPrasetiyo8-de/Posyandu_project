@@ -11,9 +11,20 @@
             <p class="text-xl text-slate-300">Isi data lengkap anak untuk pemantauan KMS</p>
         </div>
 
-        <form action="{{ route('children.store') }}" method="POST" enctype="multipart/form-data" class="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-10 border border-slate-700 shadow-2xl">
+<form action="{{ route('children.store') }}" method="POST" enctype="multipart/form-data" class="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-10 border border-slate-700 shadow-2xl">
             @csrf
             
+            <!-- NIK -->
+            <div class="mb-8">
+                <label class="block text-white font-bold mb-4 text-xl">NIK</label>
+                <input type="text" name="nik" value="{{ old('nik') }}" 
+                       class="w-full p-5 rounded-2xl bg-slate-700/50 border-2 border-slate-600 text-white text-lg focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20 transition-all @error('nik') border-red-500 @enderror"
+                       placeholder="Masukkan NIK (16 digit)">
+                @error('nik')
+                    <p class="text-red-400 mt-2 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
+
             <!-- Nama -->
             <div class="mb-8">
                 <label class="block text-white font-bold mb-4 text-xl">Nama Lengkap Anak</label>

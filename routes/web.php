@@ -38,10 +38,19 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('children', ChildController::class);
+    
+// Mothers CRUD
+    Route::get('/mothers', [App\Http\Controllers\MotherController::class, 'listIndex'])->name('mothers.index');
+    Route::get('/mothers/create', [App\Http\Controllers\MotherController::class, 'create'])->name('mothers.create');
+    Route::post('/mothers', [App\Http\Controllers\MotherController::class, 'store'])->name('mothers.store');
+    Route::get('/mothers/{mother}/edit', [App\Http\Controllers\MotherController::class, 'edit'])->name('mothers.edit');
+    Route::put('/mothers/{mother}', [App\Http\Controllers\MotherController::class, 'update'])->name('mothers.update');
+    Route::delete('/mothers/{mother}', [App\Http\Controllers\MotherController::class, 'destroy'])->name('mothers.destroy');
 });
 
 Route::get('/whatsapp-generator', function () {
     return view('whatsapp.generator');
 });
 
+Route::post('/chat', [ChatController::class, 'chat']);
 // Duplicate children resource removed - auth middleware group sudah cover

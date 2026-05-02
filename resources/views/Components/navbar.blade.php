@@ -2,7 +2,7 @@
     <div class="max-w-9xl mx-auto pl-2 pr-6 py-4 flex justify-between items-center">
 
        <div class="flex items-center gap-5">
-    <img src="{{ asset('images/LPG1.PNG') }}" alt="Logo" class="w-10 h-10 object-contain">
+    <img src="{{ asset('images/Sipandu Logo.PNG') }}" alt="Logo" class="w-10 h-10 object-contain">
     <span class="font-bold text-white">SIPANDU</span>
 </div>
 

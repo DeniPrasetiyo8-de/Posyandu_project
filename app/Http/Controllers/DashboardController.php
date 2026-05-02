@@ -24,7 +24,7 @@ class DashboardController extends Controller
         return view('dashboard.informasi-anak', compact('children'));
     }
 
-    public function informasiIbu()
+public function informasiIbu()
     {
         // Info umum untuk ibu (static atau model nanti)
         $infoIbu = [
@@ -32,17 +32,20 @@ class DashboardController extends Controller
             ['judul' => 'Vitamin A', 'deskripsi' => 'Diberikan setiap 6 bulan untuk anak...'],
             ['judul' => 'Kesehatan Ibu Hamil', 'deskripsi' => 'Pemeriksaan rutin dan suplementasi...'],
         ];
-        return view('dashboard.informasi-ibu', compact('infoIbu'));
+        // Get mothers data for this user
+        $mothers = Auth::user()->mothers()->with('posyandu')->get();
+        return view('dashboard.informasi-ibu', compact('infoIbu', 'mothers'));
     }
 
-    public function kms()
+public function kms()
     {
         $children = Auth::user()->children()->with('healthRecords')->get();
+        $mothers = Auth::user()->mothers()->get();
         $healthRecords = HealthRecord::whereHas('child', function($query) {
             $query->where('user_id', Auth::id());
         })->with('child')->latest()->get();
 
-        return view('dashboard.kms', compact('children', 'healthRecords'));
+        return view('dashboard.kms', compact('children', 'mothers', 'healthRecords'));
     }
 
     public function kader()

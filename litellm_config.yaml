@@ -1,0 +1,10 @@
+model_list:
+  - model_name: minimax
+    litellm_params:
+      model: openrouter/minimax/m2.7
+      api_key: YOUR_API_KEY
+
+fallbacks: []
+
+litellm_settings:
+  modify_params: False

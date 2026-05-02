@@ -29,6 +29,7 @@
         <div id="parent-tab" class="form-container bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 tab-content-active">
             <div class="text-center mb-8">
                 <div class="mx-auto h-20 w-20 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-sm shadow-2xl mb-4">
+                     <img src="{{ asset('images/LG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-child text-white text-3xl"></i>
                 </div>
                 <h2 class="text-3xl font-bold text-white mb-2">Login Orang Tua</h2>
@@ -98,6 +99,7 @@
         <div id="admin-tab" class="form-container bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 tab-content hidden">
             <div class="text-center mb-8">
                 <div class="mx-auto h-20 w-20 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-sm shadow-2xl mb-4">
+                     <img src="{{ asset('images/LG2.JPG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-user-shield text-white text-3xl"></i>
                 </div>
                 <h2 class="text-3xl font-bold text-white mb-2">Login Admin</h2>
@@ -110,7 +112,7 @@
                 <div class="space-y-6">
                     <div>
                         <label for="admin-email" class="block text-sm font-medium text-white mb-3">Email Admin</label>
-                        <input type="email" id="admin-email" name="email" value="sipandu@gmail.com" required class="w-full px-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-yellow-500/50 focus:border-transparent transition-all duration-300 text-lg" placeholder="sipandu@gmail.com">
+                        <input type="email" id="admin-email" name="email" required class="w-full px-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-yellow-500/50 focus:border-transparent transition-all duration-300 text-lg" placeholder="Email">
                         @error('email')
                             <p class="mt-2 text-sm text-red-400 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}
@@ -121,7 +123,7 @@
                     <div>
                         <label for="admin-password" class="block text-sm font-medium text-white mb-3">Password Admin</label>
                         <div class="relative">
-                            <input type="password" id="admin-password" name="password" required class="w-full pl-12 pr-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-yellow-500/50 focus:border-transparent transition-all duration-300 text-lg @error('password') border-red-500 ring-red-500/50 @enderror" placeholder="sipandu6">
+                            <input type="password" id="admin-password" name="password" required class="w-full pl-12 pr-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-yellow-500/50 focus:border-transparent transition-all duration-300 text-lg @error('password') border-red-500 ring-red-500/50 @enderror" placeholder="Password">
                             <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-white/70"></i>
                         </div>
                         @error('password')
@@ -143,7 +145,8 @@
         <div id="register-tab" class="form-container bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 tab-content hidden">
             <div class="text-center mb-8">
                 <div class="mx-auto h-20 w-20 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-sm shadow-2xl mb-4">
-                    <i class="fas fa-user-plus text-white text-3xl"></i>
+                     <img src="{{ asset('images/LG3.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
+                    <i class="fas fa-seedling text-white text-3x1"></i>
                 </div>
                 <h2 class="text-3xl font-bold text-white mb-2">Buat Akun Baru</h2>
                 <p class="text-white/90 text-lg">Daftar untuk mengakses layanan Posyandu</p>
