@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::create('children', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-    $table->string('nama');
-    $table->date('tanggal_lahir');
-    $table->timestamps();
+       Schema::table('children', function (Blueprint $table) {
+    $table->foreignId('posyandu_id')
+          ->nullable()
+          ->constrained()
+          ->cascadeOnDelete();
 });
     }
 
@@ -25,6 +24,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('children');
+        Schema::table('children', function (Blueprint $table) {
+            //
+        });
     }
 };

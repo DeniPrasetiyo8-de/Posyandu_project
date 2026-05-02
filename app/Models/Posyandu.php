@@ -7,15 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Posyandu extends Model
 {
-    public function children(){
-    return $this->hasMany(Child::class);
-}
+    use HasFactory;
 
-public function schedules(){
-    return $this->hasMany(Schedule::class);
-}
+    protected $fillable = ['nama_posyandu', 'rw'];
 
-public function transactions(){
-    return $this->hasMany(Transaction::class);
-}
+    public function children()
+    {
+        return $this->hasMany(Child::class);
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
        Schema::create('health_records', function (Blueprint $table) {
     $table->id();
-    $table->foreignId('child_id')->constrained()->cascadeOnDelete();
+   $table->foreignId('child_id')->constrained()->cascadeOnDelete();
     $table->float('berat');
     $table->float('tinggi');
     $table->date('tanggal');

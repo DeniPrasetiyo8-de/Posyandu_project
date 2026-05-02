@@ -17,24 +17,45 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'name' => 'required|string|max:255',
-            'rw' => ['required', Rule::in(['1', '2', '3', '4', '5', '6'])],
-            'password' => 'required',
-        ]);
+        $role = $request->role ?? 'orang_tua';
 
-        $user = User::where('name', $credentials['name'])
-                    ->where('rw', $credentials['rw'])
-                    ->first();
+        if ($role === 'admin') {
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
 
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-            Auth::login($user);
-            return redirect('/children')->with('success', 'Login berhasil!');
+            $user = User::where('email', $credentials['email'])->first();
+
+            if ($user && $user->role === 'admin' && Hash::check($credentials['password'], $user->password)) {
+                Auth::login($user);
+                return redirect('/admin/dashboard')->with('success', 'Selamat datang Admin!');
+            }
+
+            return back()->withErrors([
+                'email' => 'Email atau password admin salah.',
+            ])->onlyInput('email', 'password');
+        } else {
+            // Orang Tua login (old logic)
+            $credentials = $request->validate([
+                'name' => 'required|string|max:255',
+                'rw' => ['required', Rule::in(['1', '2', '3', '4', '5', '6'])],
+                'password' => 'required',
+            ]);
+
+            $user = User::where('name', $credentials['name'])
+                        ->where('rw', $credentials['rw'])
+                        ->first();
+
+            if ($user && Hash::check($credentials['password'], $user->password)) {
+                Auth::login($user);
+                return redirect('/dashboard')->with('success', 'Login berhasil!');
+            }
+
+            return back()->withErrors([
+                'email' => 'Nama, RW, atau password salah.',
+            ])->onlyInput('name', 'rw', 'password');
         }
-
-        return back()->withErrors([
-            'email' => 'Nama, RW, atau password salah.',
-        ])->onlyInput('name', 'rw', 'password');
     }
 
     public function showRegister()

@@ -12,24 +12,27 @@
     <div class="max-w-2xl w-full">
         <!-- Tabs -->
         <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-1 border border-white/20 mb-8">
-            <nav class="flex space-x-1 rounded-2xl bg-white/20 backdrop-blur-sm p-1">
-                <a href="#login-tab" class="tab-button flex-1 py-3 px-6 text-center font-bold rounded-xl transition-all duration-300 tab-active">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Masuk
+<nav class="flex space-x-1 rounded-2xl bg-white/20 backdrop-blur-sm p-1">
+                <a href="#parent-tab" class="tab-button flex py-3 px-6 text-center font-bold rounded-xl transition-all duration-300 tab-active">
+                    <i class="fas fa-child mr-2"></i>Orang Tua
                 </a>
-                <a href="#register-tab" class="tab-button flex-1 py-3 px-6 text-center font-bold rounded-xl transition-all duration-300 text-white/70 hover:text-white">
+                <a href="#admin-tab" class="tab-button flex py-3 px-6 text-center font-bold rounded-xl transition-all duration-300 text-white/70 hover:text-white">
+                    <i class="fas fa-user-shield mr-2"></i>Admin
+                </a>
+                <a href="#register-tab" class="tab-button flex py-3 px-6 text-center font-bold rounded-xl transition-all duration-300 text-white/70 hover:text-white">
                     <i class="fas fa-user-plus mr-2"></i>Daftar
                 </a>
             </nav>
         </div>
 
-        <!-- Login Form -->
-        <div id="login-tab" class="form-container bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 tab-content-active">
+        <!-- Orang Tua Login Form (default) -->
+        <div id="parent-tab" class="form-container bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 tab-content-active">
             <div class="text-center mb-8">
                 <div class="mx-auto h-20 w-20 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-sm shadow-2xl mb-4">
-                    <i class="fas fa-sign-in-alt text-white text-3xl"></i>
+                    <i class="fas fa-child text-white text-3xl"></i>
                 </div>
-                <h2 class="text-3xl font-bold text-white mb-2">Selamat Datang Kembali</h2>
-                <p class="text-white/90 text-lg">Masuk untuk melanjutkan</p>
+                <h2 class="text-3xl font-bold text-white mb-2">Login Orang Tua</h2>
+                <p class="text-white/90 text-lg">Masuk dengan data RW Anda</p>
             </div>
 
             @if (session('success'))
@@ -40,10 +43,11 @@
 
             <form method="POST" action="{{ url('/login') }}">
                 @csrf
+                <input type="hidden" name="role" value="orang_tua">
                 <div class="space-y-6">
                     <div>
-                        <label for="login-name" class="block text-sm font-medium text-white mb-3">Nama Lengkap</label>
-                        <input type="text" id="login-name" name="name" required class="w-full px-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-pink-500/50 focus:border-transparent transition-all duration-300 text-lg @error('name') border-red-500 ring-red-500/50 @enderror" placeholder="Nama anda">
+                        <label for="parent-name" class="block text-sm font-medium text-white mb-3">Nama Lengkap</label>
+                        <input type="text" id="parent-name" name="name" value="{{ old('name') }}" required class="w-full px-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-pink-500/50 focus:border-transparent transition-all duration-300 text-lg @error('name') border-red-500 ring-red-500/50 @enderror" placeholder="Nama anda">
                         @error('name')
                             <p class="mt-2 text-sm text-red-400 flex items-center">
                                 <i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}
@@ -52,8 +56,9 @@
                     </div>
 
                     <div>
-                       <label for="rw" class="block text-sm font-medium text-white mb-2">RW</label>
-                    <select id="rw" name="rw" required class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-2xl text-black focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all @error('rw') border-white-500 @enderror">
+                       <label for="parent-rw" class="block text-sm font-medium text-white mb-2">RW</label>
+                    <select id="parent-rw" name="rw" required class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-2xl text-black focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all @error('rw') border-red-500 ring-red-500/50 @enderror">
+                            <option value="">Pilih RW</option>
                             <option value="1" {{ old('rw') == '1' ? 'selected' : '' }}>RW 01</option>
                             <option value="2" {{ old('rw') == '2' ? 'selected' : '' }}>RW 02</option>
                             <option value="3" {{ old('rw') == '3' ? 'selected' : '' }}>RW 03</option>
@@ -69,9 +74,9 @@
                     </div>
 
                     <div>
-                        <label for="login-password" class="block text-sm font-medium text-white mb-3">Password</label>
+                        <label for="parent-password" class="block text-sm font-medium text-white mb-3">Password</label>
                         <div class="relative">
-                            <input type="password" id="login-password" name="password" required class="w-full pl-12 pr-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-pink-500/50 focus:border-transparent transition-all duration-300 text-lg @error('password') border-red-500 ring-red-500/50 @enderror" placeholder="Password anda">
+                            <input type="password" id="parent-password" name="password" required class="w-full pl-12 pr-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-pink-500/50 focus:border-transparent transition-all duration-300 text-lg @error('password') border-red-500 ring-red-500/50 @enderror" placeholder="Password anda">
                             <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-white/70"></i>
                         </div>
                         @error('password')
@@ -83,17 +88,55 @@
 
                     <button type="submit" class="group w-full bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-2xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center space-x-3 text-lg">
                         <i class="fas fa-sign-in-alt group-hover:translate-x-1 transition-transform"></i>
-                        <span>Masuk</span>
+                        <span>Masuk Orang Tua</span>
                     </button>
                 </div>
             </form>
+        </div>
 
-            <div class="text-center mt-8 pt-8 border-t border-white/20">
-                <p class="text-white/80">
-                    Belum punya akun? 
-                    <a href="#register-tab" class="font-bold text-pink-200 hover:text-pink-100 transition-colors">Daftar sekarang</a>
-                </p>
+        <!-- Admin Login Form -->
+        <div id="admin-tab" class="form-container bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 tab-content hidden">
+            <div class="text-center mb-8">
+                <div class="mx-auto h-20 w-20 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-sm shadow-2xl mb-4">
+                    <i class="fas fa-user-shield text-white text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-2">Login Admin</h2>
+                <p class="text-white/90 text-lg">Panel administrator SIPANDU</p>
             </div>
+
+            <form method="POST" action="{{ url('/login') }}">
+                @csrf
+                <input type="hidden" name="role" value="admin">
+                <div class="space-y-6">
+                    <div>
+                        <label for="admin-email" class="block text-sm font-medium text-white mb-3">Email Admin</label>
+                        <input type="email" id="admin-email" name="email" value="sipandu@gmail.com" required class="w-full px-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-yellow-500/50 focus:border-transparent transition-all duration-300 text-lg" placeholder="sipandu@gmail.com">
+                        @error('email')
+                            <p class="mt-2 text-sm text-red-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="admin-password" class="block text-sm font-medium text-white mb-3">Password Admin</label>
+                        <div class="relative">
+                            <input type="password" id="admin-password" name="password" required class="w-full pl-12 pr-5 py-4 bg-white/20 border border-white/30 rounded-2xl text-white placeholder-white/60 focus:ring-3 focus:ring-yellow-500/50 focus:border-transparent transition-all duration-300 text-lg @error('password') border-red-500 ring-red-500/50 @enderror" placeholder="sipandu6">
+                            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-white/70"></i>
+                        </div>
+                        @error('password')
+                            <p class="mt-2 text-sm text-red-400 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="group w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-2xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center space-x-3 text-lg">
+                        <i class="fas fa-user-shield group-hover:translate-x-1 transition-transform"></i>
+                        <span>Masuk Admin</span>
+                    </button>
+                </div>
+            </form>
         </div>
 
         <!-- Register Form (hidden initially) -->

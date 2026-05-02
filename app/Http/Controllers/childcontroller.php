@@ -6,13 +6,19 @@ use Illuminate\Http\Request;
 use App\Models\Child;
 use App\Models\Posyandu;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ChildController extends Controller
 {
-    // 🔍 LIST DATA
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    // 🔍 LIST DATA (user-specific)
     public function index()
     {
-        $children = Child::with('posyandu')->get();
+        $children = Auth::user()->children()->with('posyandu')->get();
         return view('children.index', compact('children'));
     }
 
@@ -27,21 +33,32 @@ class ChildController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required',
-            'tanggal_lahir' => 'required',
-            'jenis_kelamin' => 'required',
-            'posyandu_id' => 'required',
+            'nama' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:L,P',
+            'berat_badan' => 'nullable|numeric|min:0',
+            'tinggi_badan' => 'nullable|numeric|min:0',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'posyandu_id' => 'required|exists:posyandus,id',
         ]);
 
-        Child::create([
+        $data = [
             'user_id' => Auth::id(),
-            'posyandu_id' => $request->posyandu_id,
+'posyandu_id' => $request->posyandu_id ?? null,
             'nama' => $request->nama,
             'tanggal_lahir' => $request->tanggal_lahir,
             'jenis_kelamin' => $request->jenis_kelamin,
-        ]);
+            'berat_badan' => $request->berat_badan,
+            'tinggi_badan' => $request->tinggi_badan,
+        ];
 
-        return redirect('/children')->with('success','Data berhasil ditambahkan');
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $request->file('foto')->store('children', 'public');
+        }
+
+        Child::create($data);
+
+        return redirect('/children')->with('success','Data anak berhasil ditambahkan!');
     }
 
     // ✏️ FORM EDIT
@@ -57,9 +74,19 @@ class ChildController extends Controller
     {
         $child = Child::findOrFail($id);
 
-        $child->update($request->all());
+        $data = $request->only(['nama', 'tanggal_lahir', 'jenis_kelamin', 'berat_badan', 'tinggi_badan', 'posyandu_id']);
 
-        return redirect('/children')->with('success','Data berhasil diupdate');
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($child->foto) {
+                Storage::disk('public')->delete($child->foto);
+            }
+            $data['foto'] = $request->file('foto')->store('children', 'public');
+        }
+
+        $child->update($data);
+
+        return redirect('/children')->with('success','Data anak berhasil diperbarui!');
     }
 
     // ❌ DELETE
