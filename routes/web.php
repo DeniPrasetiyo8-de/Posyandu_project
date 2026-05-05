@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChildController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -20,11 +22,18 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 
 Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('index');
-    Route::get('/informasi-anak', [App\Http\Controllers\DashboardController::class, 'informasiAnak'])->name('informasi.anak');
-    Route::get('/informasi-ibu', [App\Http\Controllers\DashboardController::class, 'informasiIbu'])->name('informasi.ibu');
+    Route::get('/informasi', [App\Http\Controllers\DashboardController::class, 'informasi'])->name('informasi');
+    Route::get('/informasi/anak', [App\Http\Controllers\DashboardController::class, 'informasiAnak'])->name('informasi.anak');
+    Route::get('/informasi/ibu', [App\Http\Controllers\DashboardController::class, 'informasiIbu'])->name('informasi.ibu');
     Route::get('/kms', [App\Http\Controllers\DashboardController::class, 'kms'])->name('kms');
     Route::get('/kader', [App\Http\Controllers\DashboardController::class, 'kader'])->name('kader');
     Route::get('/artikel', [App\Http\Controllers\DashboardController::class, 'artikel'])->name('artikel');
+    
+// API routes for updating status
+    Route::post('/update-imunisasi', [App\Http\Controllers\DashboardController::class, 'updateImunisasi'])->name('update.imunisasi');
+    Route::post('/update-vitamin', [App\Http\Controllers\DashboardController::class, 'updateVitamin'])->name('update.vitamin');
+    Route::post('/update-tt', [App\Http\Controllers\DashboardController::class, 'updateTT'])->name('update.tt');
+    Route::post('/update-trimester', [App\Http\Controllers\DashboardController::class, 'updateTrimester'])->name('update.trimester');
 });
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {

@@ -1,0 +1,1495 @@
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posyandu Desa Sehat - Sistem Informasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .nav-active {
+            background: linear-gradient(135deg, #3b82f6 0%, #ec4899 100%);
+            color: white;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-hadir {
+            background-color: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+        
+        .status-tidak-hadir {
+            background-color: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+        
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <span class="font-bold text-xl text-gray-800">Posyandu<span class="text-blue-500">Sehat</span></span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-4">
+                    <button onclick="showPage('beranda')" id="nav-beranda" class="nav-active px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-md">
+                        <i class="fas fa-home mr-2"></i>Beranda
+                    </button>
+                    <button onclick="showPage('informasi')" id="nav-informasi" class="px-4 py-2 rounded-full text-gray-600 text-sm font-medium transition-all duration-300 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-info-circle mr-2"></i>Informasi
+                    </button>
+                    <button onclick="showPage('kms')" id="nav-kms" class="px-4 py-2 rounded-full text-gray-600 text-sm font-medium transition-all duration-300 hover:bg-pink-50 hover:text-pink-600">
+                        <i class="fas fa-chart-line mr-2"></i>KMS
+                    </button>
+                    <button onclick="showPage('kader')" id="nav-kader" class="px-4 py-2 rounded-full text-gray-600 text-sm font-medium transition-all duration-300 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-users mr-2"></i>Kader
+                    </button>
+                    <button onclick="showPage('artikel')" id="nav-artikel" class="px-4 py-2 rounded-full text-gray-600 text-sm font-medium transition-all duration-300 hover:bg-pink-50 hover:text-pink-600">
+                        <i class="fas fa-newspaper mr-2"></i>Artikel
+                    </button>
+                </div>
+
+                <div class="flex items-center">
+                    <button onclick="logout()" class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Keluar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div class="md:hidden bg-white border-t">
+            <div class="grid grid-cols-5 gap-2 p-2">
+                <button onclick="showPage('beranda')" class="flex flex-col items-center p-2 text-blue-600 text-xs">
+                    <i class="fas fa-home text-lg mb-1"></i>Beranda
+                </button>
+                <button onclick="showPage('informasi')" class="flex flex-col items-center p-2 text-gray-600 text-xs">
+                    <i class="fas fa-info-circle text-lg mb-1"></i>Informasi
+                </button>
+                <button onclick="showPage('kms')" class="flex flex-col items-center p-2 text-gray-600 text-xs">
+                    <i class="fas fa-chart-line text-lg mb-1"></i>KMS
+                </button>
+                <button onclick="showPage('kader')" class="flex flex-col items-center p-2 text-gray-600 text-xs">
+                    <i class="fas fa-users text-lg mb-1"></i>Kader
+                </button>
+                <button onclick="showPage('artikel')" class="flex flex-col items-center p-2 text-gray-600 text-xs">
+                    <i class="fas fa-newspaper text-lg mb-1"></i>Artikel
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- BERANDA PAGE -->
+        <div id="page-beranda" class="page-content">
+            <!-- Hero Section -->
+            <div class="bg-gradient-to-r from-blue-500 to-pink-500 rounded-3xl p-8 mb-8 text-white shadow-2xl">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="md:w-2/3 mb-6 md:mb-0">
+                        <h1 class="text-4xl font-bold mb-4">Selamat Datang di Posyandu Desa Sehat</h1>
+                        <p class="text-blue-100 text-lg mb-6">Sistem informasi terpadu untuk pemantauan kesehatan ibu dan anak. Bersama membangun generasi yang sehat dan cerdas.</p>
+                        <div class="flex gap-4">
+                            <button onclick="showPage('informasi')" class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all">
+                                Lihat Data <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="md:w-1/3 flex justify-center">
+                        <div class="text-9xl opacity-20">
+                            <i class="fas fa-baby"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jadwal Kegiatan -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>Jadwal Kegiatan Posyandu
+                    </h2>
+                    <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-medium">Bulan Ini</span>
+                </div>
+                <div class="grid md:grid-cols-3 gap-4" id="jadwal-container">
+                    <!-- Jadwal items will be populated here -->
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-blue-600 font-semibold">15 Januari 2024</p>
+                                <h3 class="font-bold text-gray-800 mt-1">Posyandu Balita</h3>
+                                <p class="text-sm text-gray-600 mt-1"><i class="fas fa-clock mr-1"></i>08:00 - 11:00 WIB</p>
+                                <p class="text-sm text-gray-600"><i class="fas fa-map-marker-alt mr-1"></i>Posyandu 1 - Melati</p>
+                            </div>
+                            <div class="bg-blue-500 text-white p-2 rounded-lg">
+                                <i class="fas fa-baby"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-xl border-l-4 border-pink-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-pink-600 font-semibold">20 Januari 2024</p>
+                                <h3 class="font-bold text-gray-800 mt-1">Posyandu Ibu Hamil</h3>
+                                <p class="text-sm text-gray-600 mt-1"><i class="fas fa-clock mr-1"></i>09:00 - 12:00 WIB</p>
+                                <p class="text-sm text-gray-600"><i class="fas fa-map-marker-alt mr-1"></i>Posyandu 3 - Mawar</p>
+                            </div>
+                            <div class="bg-pink-500 text-white p-2 rounded-lg">
+                                <i class="fas fa-female"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border-l-4 border-purple-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-purple-600 font-semibold">25 Januari 2024</p>
+                                <h3 class="font-bold text-gray-800 mt-1">Imunisasi Rutin</h3>
+                                <p class="text-sm text-gray-600 mt-1"><i class="fas fa-clock mr-1"></i>08:00 - 14:00 WIB</p>
+                                <p class="text-sm text-gray-600"><i class="fas fa-map-marker-alt mr-1"></i>Semua Posyandu</p>
+                            </div>
+                            <div class="bg-purple-500 text-white p-2 rounded-lg">
+                                <i class="fas fa-syringe"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access Buttons -->
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <button onclick="showPage('informasi'); showInformasiAnak();" class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-blue-100 text-left group">
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 text-2xl mb-4 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">Data Anak</h3>
+                    <p class="text-sm text-gray-600">Lihat dan kelola data lengkap anak termasuk imunisasi dan vitamin</p>
+                    <div class="mt-4 text-blue-600 text-sm font-semibold">Lihat Detail <i class="fas fa-arrow-right ml-1"></i></div>
+                </button>
+
+                <button onclick="showPage('kader')" class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-pink-100 text-left group">
+                    <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600 text-2xl mb-4 group-hover:bg-pink-500 group-hover:text-white transition-all">
+                        <i class="fas fa-user-nurse"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">Status Kader</h3>
+                    <p class="text-sm text-gray-600">Pantau kehadiran kader posyandu real-time</p>
+                    <div class="mt-4 text-pink-600 text-sm font-semibold">Lihat Detail <i class="fas fa-arrow-right ml-1"></i></div>
+                </button>
+
+                <button onclick="showPage('kms')" class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-purple-100 text-left group">
+                    <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 text-2xl mb-4 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">KMS</h3>
+                    <p class="text-sm text-gray-600">Kartu Menuju Sehat untuk pemantauan gizi dan kesehatan</p>
+                    <div class="mt-4 text-purple-600 text-sm font-semibold">Lihat Detail <i class="fas fa-arrow-right ml-1"></i></div>
+                </button>
+            </div>
+
+            <!-- Dokumentasi Kegiatan -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                    <i class="fas fa-images text-pink-500 mr-2"></i>Dokumentasi Kegiatan
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4" id="dokumentasi-container">
+                    <div class="relative group overflow-hidden rounded-xl cursor-pointer" onclick="showDokumentasiDetail('Posyandu Balita - Januari 2024', 'Kegiatan pemeriksaan rutin balita di Posyandu Melati. Terdapat 45 balita yang hadir dan mendapatkan imunisasi lengkap.')">
+                        <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?w=400&h=300&fit=crop" alt="Posyandu" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+                            <h4 class="text-white font-semibold">Posyandu Balita</h4>
+                            <p class="text-gray-200 text-sm">15 Jan 2024</p>
+                        </div>
+                    </div>
+                    <div class="relative group overflow-hidden rounded-xl cursor-pointer" onclick="showDokumentasiDetail('Penyuluhan Gizi - Januari 2024', 'Kegiatan penyuluhan tentang gizi seimbang untuk ibu hamil dan menyusui. Materi disampaikan oleh ahli gizi dari Puskesmas.')">
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop" alt="Penyuluhan" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+                            <h4 class="text-white font-semibold">Penyuluhan Gizi</h4>
+                            <p class="text-gray-200 text-sm">18 Jan 2024</p>
+                        </div>
+                    </div>
+                    <div class="relative group overflow-hidden rounded-xl cursor-pointer" onclick="showDokumentasiDetail('Imunisasi Campak - Januari 2024', 'Pelaksanaan imunisasi campak rubella untuk anak usia 9-59 bulan. Cakupan imunisasi mencapai 95% dari target.')">
+                        <img src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=400&h=300&fit=crop" alt="Imunisasi" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+                            <h4 class="text-white font-semibold">Imunisasi Campak</h4>
+                            <p class="text-gray-200 text-sm">22 Jan 2024</p>
+                        </div>
+                    </div>
+                    <div class="relative group overflow-hidden rounded-xl cursor-pointer" onclick="showDokumentasiDetail('Pemberian Vitamin A - Januari 2024', 'Pemberian vitamin A untuk anak balita sebagai upaya preventif defisiensi vitamin A.')">
+                        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400&h=300&fit=crop" alt="Vitamin" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+                            <h4 class="text-white font-semibold">Vitamin A</h4>
+                            <p class="text-gray-200 text-sm">25 Jan 2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFORMASI PAGE -->
+        <div id="page-informasi" class="page-content hidden">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Informasi Kesehatan</h1>
+                <p class="text-gray-600">Pilih kategori informasi yang ingin Anda lihat</p>
+            </div>
+
+            <!-- Pilihan Menu -->
+            <div id="informasi-menu" class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
+                <button onclick="showInformasiAnak()" class="card-hover bg-gradient-to-br from-blue-500 to-blue-600 text-white p-8 rounded-2xl shadow-xl text-center">
+                    <div class="text-6xl mb-4"><i class="fas fa-child"></i></div>
+                    <h2 class="text-2xl font-bold mb-2">Data Anak</h2>
+                    <p class="text-blue-100">Informasi lengkap tentang data anak, imunisasi, dan pemberian vitamin</p>
+                </button>
+                
+                <button onclick="showInformasiIbu()" class="card-hover bg-gradient-to-br from-pink-500 to-pink-600 text-white p-8 rounded-2xl shadow-xl text-center">
+                    <div class="text-6xl mb-4"><i class="fas fa-female"></i></div>
+                    <h2 class="text-2xl font-bold mb-2">Data Ibu</h2>
+                    <p class="text-pink-100">Informasi kehamilan, pemantauan KIA, dan table penambah darah</p>
+                </button>
+            </div>
+
+            <!-- Informasi Anak Section -->
+            <div id="informasi-anak" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="backToInformasiMenu()" class="text-gray-600 hover:text-blue-600 font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-800">Data Anak</h2>
+                    <button onclick="openModalAnak()" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-all">
+                        <i class="fas fa-plus mr-2"></i>Tambah Data
+                    </button>
+                </div>
+
+                <!-- Form Tambah/Edit Anak (Hidden by default) -->
+                <div id="form-anak" class="hidden bg-white p-6 rounded-2xl shadow-lg mb-6 border border-blue-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4" id="form-anak-title">Tambah Data Anak</h3>
+                    <form id="form-anak-data" onsubmit="saveDataAnak(event)" class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
+                            <input type="text" id="anak-nik" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Masukkan NIK">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                            <input type="text" id="anak-nama" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nama lengkap anak">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                            <select id="anak-gender" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
+                            <input type="date" id="anak-tgl-lahir" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Berat Badan (kg)</label>
+                            <input type="number" step="0.1" id="anak-berat" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 12.5">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tinggi Badan (cm)</label>
+                            <input type="number" step="0.1" id="anak-tinggi" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 85">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Posyandu</label>
+                            <select id="anak-posyandu" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="Posyandu 1 - Melati">Posyandu 1 - Melati</option>
+                                <option value="Posyandu 2 - Anggrek">Posyandu 2 - Anggrek</option>
+                                <option value="Posyandu 3 - Mawar">Posyandu 3 - Mawar</option>
+                                <option value="Posyandu 4 - Dahlia">Posyandu 4 - Dahlia</option>
+                                <option value="Posyandu 5 - Kenanga">Posyandu 5 - Kenanga</option>
+                                <option value="Posyandu 6 - Cempaka">Posyandu 6 - Cempaka</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Foto Profil</label>
+                            <input type="file" id="anak-foto" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="md:col-span-2 flex gap-2 justify-end">
+                            <button type="button" onclick="closeFormAnak()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
+                            <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Simpan Data</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tabel Data Anak -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 mb-8">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-blue-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Foto</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">NIK</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Nama</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Jenis Kelamin</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Usia</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Posyandu</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-anak-body" class="divide-y divide-gray-200">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Imunisasi dan Vitamin -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-syringe text-blue-500 mr-2"></i>Daftar Imunisasi</h3>
+                        <ul class="space-y-3" id="list-imunisasi">
+                            <li class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                <span class="font-medium text-gray-700">Hepatitis B (0-7 hari)</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">Sudah</span>
+                            </li>
+                            <li class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                <span class="font-medium text-gray-700">BCG (1 bulan)</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">Sudah</span>
+                            </li>
+                            <li class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                <span class="font-medium text-gray-700">Polio 1 (2 bulan)</span>
+                                <span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs font-semibold">Belum</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-pink-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-pills text-pink-500 mr-2"></i>Pemberian Vitamin</h3>
+                        <ul class="space-y-3" id="list-vitamin">
+                            <li class="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
+                                <span class="font-medium text-gray-700">Vitamin A (6-11 bulan)</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">Sudah</span>
+                            </li>
+                            <li class="flex items-center justify-between p-3 bg-pink-50 rounded-lg">
+                                <span class="font-medium text-gray-700">Vitamin A (12-59 bulan)</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">Sudah</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informasi Ibu Section -->
+            <div id="informasi-ibu" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="backToInformasiMenu()" class="text-gray-600 hover:text-pink-600 font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-800">Data Ibu Hamil</h2>
+                    <button onclick="openModalIbu()" class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 transition-all">
+                        <i class="fas fa-plus mr-2"></i>Tambah Data
+                    </button>
+                </div>
+
+                <!-- Form Tambah/Edit Ibu -->
+                <div id="form-ibu" class="hidden bg-white p-6 rounded-2xl shadow-lg mb-6 border border-pink-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4" id="form-ibu-title">Tambah Data Ibu</h3>
+                    <form id="form-ibu-data" onsubmit="saveDataIbu(event)" class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
+                            <input type="text" id="ibu-nik" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="Masukkan NIK">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                            <input type="text" id="ibu-nama" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="Nama lengkap ibu">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Kehamilan (HPHT)</label>
+                            <input type="date" id="ibu-hpht" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Berat Badan (kg)</label>
+                            <input type="number" step="0.1" id="ibu-berat" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="Contoh: 58.5">
+                        </div>
+                        <div class="md:col-span-2 flex gap-2 justify-end">
+                            <button type="button" onclick="closeFormIbu()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
+                            <button type="submit" class="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600">Simpan Data</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tabel Data Ibu -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 mb-8">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-pink-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-pink-600 uppercase tracking-wider">NIK</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-pink-600 uppercase tracking-wider">Nama</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-pink-600 uppercase tracking-wider">Usia Kehamilan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-pink-600 uppercase tracking-wider">Berat Badan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-pink-600 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-ibu-body" class="divide-y divide-gray-200">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Perkembangan Kehamilan & TT -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-pink-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-baby-carriage text-pink-500 mr-2"></i>Perkembangan Kehamilan</h3>
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-pink-500 pl-4">
+                                <p class="text-sm text-gray-500">Trimester 1</p>
+                                <p class="font-medium">Pemeriksaan awal, konsumsi asam folat</p>
+                                <p class="text-xs text-green-600 mt-1"><i class="fas fa-check-circle"></i> Selesai</p>
+                            </div>
+                            <div class="border-l-4 border-pink-300 pl-4">
+                                <p class="text-sm text-gray-500">Trimester 2</p>
+                                <p class="font-medium">Pemeriksaan USG, pemantauan berat badan</p>
+                                <p class="text-xs text-blue-600 mt-1"><i class="fas fa-spinner fa-spin"></i> Sedang berlangsung</p>
+                            </div>
+                            <div class="border-l-4 border-gray-300 pl-4 opacity-50">
+                                <p class="text-sm text-gray-500">Trimester 3</p>
+                                <p class="font-medium">Persiapan persalinan, pemeriksaan rutin</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-red-100">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-tint text-red-500 mr-2"></i>Table Penambah Darah (TT)</h3>
+                        <table class="w-full text-sm">
+                            <thead class="bg-red-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-red-600">Suntikan</th>
+                                    <th class="px-4 py-2 text-left text-red-600">Tanggal</th>
+                                    <th class="px-4 py-2 text-left text-red-600">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr>
+                                    <td class="px-4 py-3">TT 1</td>
+                                    <td class="px-4 py-3">15 Jan 2024</td>
+                                    <td class="px-4 py-3"><span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">Sudah</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">TT 2</td>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3"><span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">Menunggu</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">TT 3</td>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">Belum</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KMS PAGE -->
+        <div id="page-kms" class="page-content hidden">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Kartu Menuju Sehat (KMS)</h1>
+                <p class="text-gray-600">Pemantauan pertumbuhan dan perkembangan kesehatan</p>
+            </div>
+
+            <!-- Pilihan Tipe -->
+            <div class="flex justify-center gap-4 mb-8">
+                <button onclick="showKMSAnak()" id="btn-kms-anak" class="px-6 py-3 rounded-full bg-blue-500 text-white font-semibold shadow-lg transition-all">
+                    <i class="fas fa-child mr-2"></i>Anak
+                </button>
+                <button onclick="showKMSIbu()" id="btn-kms-ibu" class="px-6 py-3 rounded-full bg-gray-200 text-gray-600 font-semibold hover:bg-pink-100 hover:text-pink-600 transition-all">
+                    <i class="fas fa-female mr-2"></i>Ibu Hamil
+                </button>
+            </div>
+
+            <!-- KMS Anak -->
+            <div id="kms-anak-content" class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Grafik Berat Badan Menurut Usia</h3>
+                    <canvas id="chart-berat-anak" width="400" height="300"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Grafik Tinggi Badan Menurut Usia</h3>
+                    <canvas id="chart-tinggi-anak" width="400" height="300"></canvas>
+                </div>
+                <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Status Gizi Anak</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center p-4 bg-green-50 rounded-xl border-2 border-green-200">
+                            <p class="text-3xl font-bold text-green-600">85%</p>
+                            <p class="text-sm text-gray-600 mt-1">Gizi Baik</p>
+                        </div>
+                        <div class="text-center p-4 bg-yellow-50 rounded-xl border-2 border-yellow-200">
+                            <p class="text-3xl font-bold text-yellow-600">10%</p>
+                            <p class="text-sm text-gray-600 mt-1">Gizi Kurang</p>
+                        </div>
+                        <div class="text-center p-4 bg-red-50 rounded-xl border-2 border-red-200">
+                            <p class="text-3xl font-bold text-red-600">3%</p>
+                            <p class="text-sm text-gray-600 mt-1">Gizi Buruk</p>
+                        </div>
+                        <div class="text-center p-4 bg-orange-50 rounded-xl border-2 border-orange-200">
+                            <p class="text-3xl font-bold text-orange-600">2%</p>
+                            <p class="text-sm text-gray-600 mt-1">Berisiko Gizi Lebih</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KMS Ibu -->
+            <div id="kms-ibu-content" class="hidden grid md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-pink-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Grafik Kenaikan Berat Badan Ibu Hamil</h3>
+                    <canvas id="chart-berat-ibu" width="400" height="300"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-pink-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Grafik Lingkar Lengan Atas (LILA)</h3>
+                    <canvas id="chart-lila-ibu" width="400" height="300"></canvas>
+                </div>
+                <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-lg border border-pink-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Pemeriksaan Kehamilan</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-pink-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-pink-600">Kunjungan</th>
+                                    <th class="px-4 py-2 text-left text-pink-600">Usia Hamil</th>
+                                    <th class="px-4 py-2 text-left text-pink-600">Berat Badan</th>
+                                    <th class="px-4 py-2 text-left text-pink-600">Tekanan Darah</th>
+                                    <th class="px-4 py-2 text-left text-pink-600">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr>
+                                    <td class="px-4 py-3">K1</td>
+                                    <td class="px-4 py-3">12 minggu</td>
+                                    <td class="px-4 py-3">58 kg</td>
+                                    <td class="px-4 py-3">120/80</td>
+                                    <td class="px-4 py-3"><span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">Normal</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">K2</td>
+                                    <td class="px-4 py-3">20 minggu</td>
+                                    <td class="px-4 py-3">62 kg</td>
+                                    <td class="px-4 py-3">118/78</td>
+                                    <td class="px-4 py-3"><span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">Normal</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">K3</td>
+                                    <td class="px-4 py-3">28 minggu</td>
+                                    <td class="px-4 py-3">65 kg</td>
+                                    <td class="px-4 py-3">122/82</td>
+                                    <td class="px-4 py-3"><span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">Normal</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KADER PAGE -->
+        <div id="page-kader" class="page-content hidden">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Status Kader Posyandu</h1>
+                <p class="text-gray-600">Informasi kehadiran kader di masing-masing posyandu</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div class="flex justify-end mb-4 gap-4 text-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="status-dot status-hadir"></span>
+                        <span class="text-gray-600">Hadir</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="status-dot status-tidak-hadir"></span>
+                        <span class="text-gray-600">Tidak Hadir</span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gradient-to-r from-blue-50 to-pink-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">No</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Nama Kader</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Posisi/Jabatan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Posyandu</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Status Kehadiran</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-kader-body" class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-3">SB</div>
+                                        <div class="text-sm font-medium text-gray-900">Siti Aminah</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Ketua</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Posyandu 1 - Melati</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="status-dot status-hadir mr-2"></span>
+                                    <span class="text-sm text-green-600 font-medium">Hadir</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold mr-3">RB</div>
+                                        <div class="text-sm font-medium text-gray-900">Rina Budiarti</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Sekretaris</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Posyandu 1 - Melati</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="status-dot status-hadir mr-2"></span>
+                                    <span class="text-sm text-green-600 font-medium">Hadir</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold mr-3">DW</div>
+                                        <div class="text-sm font-medium text-gray-900">Dewi Susanti</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Bidan</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Posyandu 2 - Anggrek</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="status-dot status-tidak-hadir mr-2"></span>
+                                    <span class="text-sm text-red-600 font-medium">Tidak Hadir</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold mr-3">MW</div>
+                                        <div class="text-sm font-medium text-gray-900">Mawar Sari</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Kader Gizi</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Posyandu 3 - Mawar</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="status-dot status-hadir mr-2"></span>
+                                    <span class="text-sm text-green-600 font-medium">Hadir</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold mr-3">NL</div>
+                                        <div class="text-sm font-medium text-gray-900">Nurul Hidayah</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Kader Imunisasi</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Posyandu 4 - Dahlia</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="status-dot status-tidak-hadir mr-2"></span>
+                                    <span class="text-sm text-red-600 font-medium">Tidak Hadir</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARTIKEL PAGE -->
+        <div id="page-artikel" class="page-content hidden">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Artikel Kesehatan</h1>
+                <p class="text-gray-600">Informasi seputar kesehatan ibu dan anak</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button onclick="filterArtikel('all')" class="px-6 py-2 rounded-full bg-gray-800 text-white font-medium hover:shadow-lg transition-all">
+                    Semua
+                </button>
+                <button onclick="filterArtikel('gizi')" class="px-6 py-2 rounded-full bg-green-500 text-white font-medium hover:shadow-lg transition-all">
+                    <i class="fas fa-leaf mr-2"></i>Gizi Anak
+                </button>
+                <button onclick="filterArtikel('ibu')" class="px-6 py-2 rounded-full bg-pink-400 text-white font-medium hover:shadow-lg transition-all">
+                    <i class="fas fa-female mr-2"></i>Ibu Hamil
+                </button>
+                <button onclick="filterArtikel('imunisasi')" class="px-6 py-2 rounded-full bg-purple-500 text-white font-medium hover:shadow-lg transition-all">
+                    <i class="fas fa-syringe mr-2"></i>Imunisasi
+                </button>
+            </div>
+
+            <!-- Artikel Grid -->
+            <div id="artikel-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Artikel 1 -->
+                <div class="artikel-item gizi bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 card-hover" data-kategori="gizi">
+                    <div class="h-48 bg-gray-200 relative">
+                        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop" alt="Gizi" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Gizi Anak</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Pentingnya Gizi Seimbang untuk Tumbuh Kembang Anak</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Gizi seimbang sangat penting untuk mendukung tumbuh kembang optimal anak. Ketahui nutrisi yang tepat untuk buah hati Anda.</p>
+                        <button onclick="bukaArtikel(1)" class="w-full py-2 border-2 border-green-500 text-green-600 rounded-full font-semibold hover:bg-green-500 hover:text-white transition-all">
+                            Baca Selengkapnya
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artikel 2 -->
+                <div class="artikel-item ibu bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 card-hover" data-kategori="ibu">
+                    <div class="h-48 bg-gray-200 relative">
+                        <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=400&fit=crop" alt="Ibu Hamil" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-pink-400 text-white px-3 py-1 rounded-full text-xs font-semibold">Ibu Hamil</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Tips Sehat Selama Kehamilan Trimester Pertama</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Trimester pertama adalah masa kritis dalam kehamilan. Berikut tips menjaga kesehatan ibu dan janin.</p>
+                        <button onclick="bukaArtikel(2)" class="w-full py-2 border-2 border-pink-400 text-pink-400 rounded-full font-semibold hover:bg-pink-400 hover:text-white transition-all">
+                            Baca Selengkapnya
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artikel 3 -->
+                <div class="artikel-item imunisasi bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 card-hover" data-kategori="imunisasi">
+                    <div class="h-48 bg-gray-200 relative">
+                        <img src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=600&h=400&fit=crop" alt="Imunisasi" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Imunisasi</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Jadwal Imunisasi Wajib untuk Bayi dan Balita</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Kenali jadwal imunisasi lengkap untuk melindungi anak dari berbagai penyakit berbahaya.</p>
+                        <button onclick="bukaArtikel(3)" class="w-full py-2 border-2 border-purple-500 text-purple-600 rounded-full font-semibold hover:bg-purple-500 hover:text-white transition-all">
+                            Baca Selengkapnya
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artikel 4 -->
+                <div class="artikel-item gizi bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 card-hover" data-kategori="gizi">
+                    <div class="h-48 bg-gray-200 relative">
+                        <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&h=400&fit=crop" alt="MPASI" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Gizi Anak</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Panduan Lengkap Pemberian MPASI untuk Bayi 6 Bulan</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">MPASI yang tepat sangat penting untuk perkembangan bayi. Pelajari teknik dan menu yang sesuai.</p>
+                        <button onclick="bukaArtikel(4)" class="w-full py-2 border-2 border-green-500 text-green-600 rounded-full font-semibold hover:bg-green-500 hover:text-white transition-all">
+                            Baca Selengkapnya
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artikel 5 -->
+                <div class="artikel-item ibu bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 card-hover" data-kategori="ibu">
+                    <div class="h-48 bg-gray-200 relative">
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop" alt="Kesehatan Ibu" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-pink-400 text-white px-3 py-1 rounded-full text-xs font-semibold">Ibu Hamil</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Makanan Bergizi untuk Ibu Hamil Trimester Kedua</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Trimester kedua adalah waktu pertumbuhan janin yang pesat. Penuhi nutrisi dengan makanan tepat.</p>
+                        <button onclick="bukaArtikel(5)" class="w-full py-2 border-2 border-pink-400 text-pink-400 rounded-full font-semibold hover:bg-pink-400 hover:text-white transition-all">
+                            Baca Selengkapnya
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artikel 6 -->
+                <div class="artikel-item imunisasi bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 card-hover" data-kategori="imunisasi">
+                    <div class="h-48 bg-gray-200 relative">
+                        <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop" alt="Vitamin" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Imunisasi</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Manfaat Vitamin A untuk Kesehatan Mata Anak</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">Vitamin A berperan penting dalam kesehatan mata dan imunitas anak. Ketahui dosis yang tepat.</p>
+                        <button onclick="bukaArtikel(6)" class="w-full py-2 border-2 border-purple-500 text-purple-600 rounded-full font-semibold hover:bg-purple-500 hover:text-white transition-all">
+                            Baca Selengkapnya
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Artikel -->
+    <div id="modal-artikel" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-end p-4 border-b">
+                <button onclick="tutupModalArtikel()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <div class="p-6 md:p-8">
+                <div class="md:flex gap-8">
+                    <div class="md:w-1/2 mb-6 md:mb-0">
+                        <img id="modal-artikel-img" src="" alt="Artikel" class="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg">
+                    </div>
+                    <div class="md:w-1/2">
+                        <span id="modal-artikel-kategori" class="inline-block px-4 py-1 rounded-full text-sm font-semibold mb-4"></span>
+                        <h2 id="modal-artikel-judul" class="text-2xl md:text-3xl font-bold text-gray-800 mb-4"></h2>
+                        <div id="modal-artikel-isi" class="text-gray-600 leading-relaxed space-y-4">
+                            <!-- Content will be inserted here -->
+                        </div>
+                        <div class="mt-8 pt-6 border-t">
+                            <p class="text-sm text-gray-500">Ditulis oleh: <span class="font-semibold">Tim Kesehatan Posyandu</span></p>
+                            <p class="text-sm text-gray-500">Tanggal: <span id="modal-artikel-tanggal"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dokumentasi -->
+    <div id="modal-dokumentasi" class="modal">
+        <div class="modal-content max-w-2xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="dokumentasi-judul" class="text-2xl font-bold text-gray-800"></h3>
+                    <button onclick="tutupModalDokumentasi()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                </div>
+                <p id="dokumentasi-isi" class="text-gray-600 leading-relaxed"></p>
+                <div class="mt-6 flex justify-end">
+                    <button onclick="tutupModalDokumentasi()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage (Simulated)
+        let dataAnak = [
+            {id: 1, nik: '3201234567890001', nama: 'Ahmad Fauzi', gender: 'Laki-laki', tglLahir: '2020-05-15', berat: 12.5, tinggi: 85, posyandu: 'Posyandu 1 - Melati'},
+            {id: 2, nik: '3201234567890002', nama: 'Siti Rahma', gender: 'Perempuan', tglLahir: '2019-08-22', berat: 14.2, tinggi: 92, posyandu: 'Posyandu 2 - Anggrek'}
+        ];
+        
+        let dataIbu = [
+            {id: 1, nik: '3201234567891001', nama: 'Dewi Susanti', hpht: '2023-06-15', berat: 65},
+            {id: 2, nik: '3201234567891002', nama: 'Rina Wulandari', hpht: '2023-08-10', berat: 58}
+        ];
+
+        let editingId = null;
+
+        // Navigation Functions
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById('page-' + pageName).classList.remove('hidden');
+            
+            // Update nav styling
+            document.querySelectorAll('[id^="nav-"]').forEach(nav => {
+                nav.classList.remove('nav-active');
+                nav.classList.add('text-gray-600');
+            });
+            
+            const activeNav = document.getElementById('nav-' + pageName);
+            if(activeNav) {
+                activeNav.classList.add('nav-active');
+                activeNav.classList.remove('text-gray-600');
+            }
+
+            // Initialize charts if KMS page
+            if(pageName === 'kms') {
+                setTimeout(initCharts, 100);
+            }
+        }
+
+        function logout() {
+            if(confirm('Apakah Anda yakin ingin keluar?')) {
+                alert('Anda telah keluar dari sistem');
+                window.location.reload();
+            }
+        }
+
+        // Informasi Functions
+        function showInformasiAnak() {
+            document.getElementById('informasi-menu').classList.add('hidden');
+            document.getElementById('informasi-anak').classList.remove('hidden');
+            document.getElementById('informasi-ibu').classList.add('hidden');
+            renderTableAnak();
+        }
+
+        function showInformasiIbu() {
+            document.getElementById('informasi-menu').classList.add('hidden');
+            document.getElementById('informasi-anak').classList.add('hidden');
+            document.getElementById('informasi-ibu').classList.remove('hidden');
+            renderTableIbu();
+        }
+
+        function backToInformasiMenu() {
+            document.getElementById('informasi-menu').classList.remove('hidden');
+            document.getElementById('informasi-anak').classList.add('hidden');
+            document.getElementById('informasi-ibu').classList.add('hidden');
+            closeFormAnak();
+            closeFormIbu();
+        }
+
+        // Anak CRUD Functions
+        function openModalAnak() {
+            document.getElementById('form-anak').classList.remove('hidden');
+            document.getElementById('form-anak-title').textContent = 'Tambah Data Anak';
+            editingId = null;
+            document.getElementById('form-anak-data').reset();
+        }
+
+        function closeFormAnak() {
+            document.getElementById('form-anak').classList.add('hidden');
+        }
+
+        function editAnak(id) {
+            const anak = dataAnak.find(a => a.id === id);
+            if(anak) {
+                document.getElementById('anak-nik').value = anak.nik;
+                document.getElementById('anak-nama').value = anak.nama;
+                document.getElementById('anak-gender').value = anak.gender;
+                document.getElementById('anak-tgl-lahir').value = anak.tglLahir;
+                document.getElementById('anak-berat').value = anak.berat;
+                document.getElementById('anak-tinggi').value = anak.tinggi;
+                document.getElementById('anak-posyandu').value = anak.posyandu;
+                
+                document.getElementById('form-anak').classList.remove('hidden');
+                document.getElementById('form-anak-title').textContent = 'Edit Data Anak';
+                editingId = id;
+            }
+        }
+
+        function deleteAnak(id) {
+            if(confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                dataAnak = dataAnak.filter(a => a.id !== id);
+                renderTableAnak();
+            }
+        }
+
+        function saveDataAnak(e) {
+            e.preventDefault();
+            
+            const newData = {
+                id: editingId || Date.now(),
+                nik: document.getElementById('anak-nik').value,
+                nama: document.getElementById('anak-nama').value,
+                gender: document.getElementById('anak-gender').value,
+                tglLahir: document.getElementById('anak-tgl-lahir').value,
+                berat: document.getElementById('anak-berat').value,
+                tinggi: document.getElementById('anak-tinggi').value,
+                posyandu: document.getElementById('anak-posyandu').value
+            };
+
+            if(editingId) {
+                const index = dataAnak.findIndex(a => a.id === editingId);
+                dataAnak[index] = newData;
+            } else {
+                dataAnak.push(newData);
+            }
+
+            closeFormAnak();
+            renderTableAnak();
+            alert('Data berhasil disimpan!');
+        }
+
+        function renderTableAnak() {
+            const tbody = document.getElementById('table-anak-body');
+            tbody.innerHTML = '';
+            
+            dataAnak.forEach(anak => {
+                const tr = document.createElement('tr');
+                const usia = hitungUsia(anak.tglLahir);
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${anak.nik}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${anak.nama}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${anak.gender}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${usia}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${anak.posyandu}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="editAnak(${anak.id})" class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteAnak(${anak.id})" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function hitungUsia(tglLahir) {
+            const today = new Date();
+            const birthDate = new Date(tglLahir);
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            if (months < 0 || (months === 0 && today.getDate() < birthDate.getDate())) {
+                years--;
+                months += 12;
+            }
+            return years > 0 ? `${years} th ${months} bln` : `${months} bulan`;
+        }
+
+        // Ibu CRUD Functions
+        function openModalIbu() {
+            document.getElementById('form-ibu').classList.remove('hidden');
+            document.getElementById('form-ibu-title').textContent = 'Tambah Data Ibu';
+            editingId = null;
+            document.getElementById('form-ibu-data').reset();
+        }
+
+        function closeFormIbu() {
+            document.getElementById('form-ibu').classList.add('hidden');
+        }
+
+        function editIbu(id) {
+            const ibu = dataIbu.find(i => i.id === id);
+            if(ibu) {
+                document.getElementById('ibu-nik').value = ibu.nik;
+                document.getElementById('ibu-nama').value = ibu.nama;
+                document.getElementById('ibu-hpht').value = ibu.hpht;
+                document.getElementById('ibu-berat').value = ibu.berat;
+                
+                document.getElementById('form-ibu').classList.remove('hidden');
+                document.getElementById('form-ibu-title').textContent = 'Edit Data Ibu';
+                editingId = id;
+            }
+        }
+
+        function deleteIbu(id) {
+            if(confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                dataIbu = dataIbu.filter(i => i.id !== id);
+                renderTableIbu();
+            }
+        }
+
+        function saveDataIbu(e) {
+            e.preventDefault();
+            
+            const newData = {
+                id: editingId || Date.now(),
+                nik: document.getElementById('ibu-nik').value,
+                nama: document.getElementById('ibu-nama').value,
+                hpht: document.getElementById('ibu-hpht').value,
+                berat: document.getElementById('ibu-berat').value
+            };
+
+            if(editingId) {
+                const index = dataIbu.findIndex(i => i.id === editingId);
+                dataIbu[index] = newData;
+            } else {
+                dataIbu.push(newData);
+            }
+
+            closeFormIbu();
+            renderTableIbu();
+            alert('Data berhasil disimpan!');
+        }
+
+        function renderTableIbu() {
+            const tbody = document.getElementById('table-ibu-body');
+            tbody.innerHTML = '';
+            
+            dataIbu.forEach(ibu => {
+                const usiaHamil = hitungUsiaHamil(ibu.hpht);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ibu.nik}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ibu.nama}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${usiaHamil}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${ibu.berat} kg</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="editIbu(${ibu.id})" class="text-pink-600 hover:text-pink-900 mr-3"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteIbu(${ibu.id})" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function hitungUsiaHamil(tglHPHT) {
+            const today = new Date();
+            const hpht = new Date(tglHPHT);
+            const diffTime = Math.abs(today - hpht);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            const weeks = Math.floor(diffDays / 7);
+            const days = diffDays % 7;
+            return `${weeks} minggu ${days} hari`;
+        }
+
+        // KMS Functions
+        function showKMSAnak() {
+            document.getElementById('kms-anak-content').classList.remove('hidden');
+            document.getElementById('kms-ibu-content').classList.add('hidden');
+            document.getElementById('btn-kms-anak').classList.add('bg-blue-500', 'text-white');
+            document.getElementById('btn-kms-anak').classList.remove('bg-gray-200', 'text-gray-600');
+            document.getElementById('btn-kms-ibu').classList.remove('bg-pink-500', 'text-white');
+            document.getElementById('btn-kms-ibu').classList.add('bg-gray-200', 'text-gray-600');
+            initCharts();
+        }
+
+        function showKMSIbu() {
+            document.getElementById('kms-anak-content').classList.add('hidden');
+            document.getElementById('kms-ibu-content').classList.remove('hidden');
+            document.getElementById('btn-kms-ibu').classList.add('bg-pink-500', 'text-white');
+            document.getElementById('btn-kms-ibu').classList.remove('bg-gray-200', 'text-gray-600');
+            document.getElementById('btn-kms-anak').classList.remove('bg-blue-500', 'text-white');
+            document.getElementById('btn-kms-anak').classList.add('bg-gray-200', 'text-gray-600');
+            initChartsIbu();
+        }
+
+        function initCharts() {
+            // Chart Berat Anak
+            const ctxBerat = document.getElementById('chart-berat-anak');
+            if(ctxBerat) {
+                new Chart(ctxBerat, {
+                    type: 'line',
+                    data: {
+                        labels: ['0', '6', '12', '18', '24', '30', '36'],
+                        datasets: [{
+                            label: 'Berat Badan (kg)',
+                            data: [3.2, 7.5, 9.8, 11.2, 12.5, 13.8, 14.5],
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Standar WHO',
+                            data: [3.2, 7.9, 10.1, 11.5, 12.9, 14.2, 15.3],
+                            borderColor: 'rgb(236, 72, 153)',
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart Tinggi Anak
+            const ctxTinggi = document.getElementById('chart-tinggi-anak');
+            if(ctxTinggi) {
+                new Chart(ctxTinggi, {
+                    type: 'line',
+                    data: {
+                        labels: ['0', '6', '12', '18', '24', '30', '36'],
+                        datasets: [{
+                            label: 'Tinggi Badan (cm)',
+                            data: [50, 67, 76, 84, 89, 94, 98],
+                            borderColor: 'rgb(147, 51, 234)',
+                            backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function initChartsIbu() {
+            // Chart Berat Ibu
+            const ctxBeratIbu = document.getElementById('chart-berat-ibu');
+            if(ctxBeratIbu) {
+                new Chart(ctxBeratIbu, {
+                    type: 'line',
+                    data: {
+                        labels: ['Tri 1', 'Minggu 16', 'Minggu 20', 'Minggu 24', 'Minggu 28', 'Minggu 32', 'Minggu 36'],
+                        datasets: [{
+                            label: 'Berat Badan (kg)',
+                            data: [58, 59.5, 61, 63, 65, 67, 68.5],
+                            borderColor: 'rgb(236, 72, 153)',
+                            backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+
+            // Chart LILA
+            const ctxLila = document.getElementById('chart-lila-ibu');
+            if(ctxLila) {
+                new Chart(ctxLila, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tri 1', 'Tri 2', 'Tri 3'],
+                        datasets: [{
+                            label: 'Lingkar Lengan Atas (cm)',
+                            data: [23.5, 24.2, 25.1],
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 20
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Artikel Functions
+        const artikelData = {
+            1: {
+                judul: 'Pentingnya Gizi Seimbang untuk Tumbuh Kembang Anak',
+                kategori: 'Gizi Anak',
+                kategoriClass: 'bg-green-100 text-green-600',
+                img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=600&fit=crop',
+                tanggal: '15 Januari 2024',
+                isi: `<p class="mb-4">Gizi seimbang adalah kebutuhan dasar untuk tumbuh kembang optimal anak. Asupan nutrisi yang tepat akan mendukung perkembangan otak, tulang, dan organ vital lainnya.</p>
+                      <p class="mb-4"><strong>Komponen Gizi Seimbang:</strong></p>
+                      <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li>Karbohidrat sebagai sumber energi</li>
+                        <li>Protein untuk pertumbuhan dan perbaikan jaringan</li>
+                        <li>Lemak sehat untuk perkembangan otak</li>
+                        <li>Vitamin dan mineral untuk sistem imun</li>
+                        <li>Serat untuk kesehatan pencernaan</li>
+                      </ul>
+                      <p>Orang tua perlu memastikan anak mengonsumsi makanan dari berbagai kelompok makanan setiap harinya. Hindari junk food dan perbanyak buah serta sayur.</p>`
+            },
+            2: {
+                judul: 'Tips Sehat Selama Kehamilan Trimester Pertama',
+                kategori: 'Ibu Hamil',
+                kategoriClass: 'bg-pink-100 text-pink-600',
+                img: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=800&h=600&fit=crop',
+                tanggal: '12 Januari 2024',
+                isi: `<p class="mb-4">Trimester pertama adalah masa kritis dalam kehamilan. Banyak perubahan terjadi pada tubuh ibu dan perkembangan janin.</p>
+                      <p class="mb-4"><strong>Tips Menjaga Kesehatan:</strong></p>
+                      <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li>Konsumsi asam folat secara teratur</li>
+                        <li>Makan makanan bergizi dalam porsi kecil tapi sering</li>
+                        <li>Istirahat yang cukup dan hindari stres</li>
+                        <li>Hindari alkohol, rokok, dan kafein berlebihan</li>
+                        <li>Rutin memeriksa kehamilan ke dokter</li>
+                      </ul>
+                      <p>Mual dan muntah adalah hal normal di trimester ini. Konsumsi jahe atau crackers dapat membantu mengurangi mual.</p>`
+            },
+            3: {
+                judul: 'Jadwal Imunisasi Wajib untuk Bayi dan Balita',
+                kategori: 'Imunisasi',
+                kategoriClass: 'bg-purple-100 text-purple-600',
+                img: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=800&h=600&fit=crop',
+                tanggal: '10 Januari 2024',
+                isi: `<p class="mb-4">Imunisasi adalah cara terbaik untuk melindungi anak dari penyakit berbahaya. Berikut jadwal imunisasi wajib menurut IDAI:</p>
+                      <p class="mb-4"><strong>Jadwal Imunisasi:</strong></p>
+                      <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li><strong>0-7 hari:</strong> Hepatitis B, BCG, Polio 0</li>
+                        <li><strong>2 bulan:</strong> Polio 1, DTP-HB-Hib 1, PCV 1, Rotavirus 1</li>
+                        <li><strong>3 bulan:</strong> Polio 2, DTP-HB-Hib 2, PCV 2, Rotavirus 2</li>
+                        <li><strong>4 bulan:</strong> Polio 3, DTP-HB-Hib 3, PCV 3, IPV</li>
+                        <li><strong>9 bulan:</strong> Campak-Rubella 1</li>
+                        <li><strong>18 bulan:</strong> DTP-HB-Hib 4, Campak-Rubella 2</li>
+                      </ul>
+                      <p>Pastikan anak mendapatkan imunisasi lengkap sesuai jadwal untuk perlindungan optimal.</p>`
+            },
+            4: {
+                judul: 'Panduan Lengkap Pemberian MPASI untuk Bayi 6 Bulan',
+                kategori: 'Gizi Anak',
+                kategoriClass: 'bg-green-100 text-green-600',
+                img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=600&fit=crop',
+                tanggal: '8 Januari 2024',
+                isi: `<p class="mb-4">MPASI (Makanan Pendamping ASI) mulai diberikan saat bayi berusia 6 bulan. Ini adalah masa penting untuk mengenalkan berbagai tekstur dan rasa.</p>
+                      <p class="mb-4"><strong>Prinsip MPASI:</strong></p>
+                      <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li><strong>Tepat waktu:</strong> Mulai saat bayi 6 bulan</li>
+                        <li><strong>Aman:</strong> Cuci tangan dan gunakan bahan segar</li>
+                        <li><strong>Cukup:</strong> Porsi sesuai usia dan selera bayi</li>
+                        <li><strong>Teratur:</strong> 2-3 kali sehari, bertahap meningkat</li>
+                      </ul>
+                      <p>Mulailah dengan tekstur halus, kemudian bertahap ke tekstur kasar. Perkenalkan satu jenis makanan baru setiap 3-4 hari untuk memantau alergi.</p>`
+            },
+            5: {
+                judul: 'Makanan Bergizi untuk Ibu Hamil Trimester Kedua',
+                kategori: 'Ibu Hamil',
+                kategoriClass: 'bg-pink-100 text-pink-600',
+                img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop',
+                tanggal: '5 Januari 2024',
+                isi: `<p class="mb-4">Trimester kedua adalah masa pertumbuhan pesat janin. Kebutuhan nutrisi meningkat signifikan di masa ini.</p>
+                      <p class="mb-4"><strong>Nutrisi Penting:</strong></p>
+                      <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li><strong>Protein:</strong> Daging, ikan, telur, kacang-kacangan</li>
+                        <li><strong>Kalsium:</strong> Susu, yoghurt, keju, brokoli</li>
+                        <li><strong>Zat Besi:</strong> Hati, daging merah, bayam, kacang hijau</li>
+                        <li><strong>Asam Lemak Omega-3:</strong> Ikan salmon, sarden, kenari</li>
+                        <li><strong>Serat:</strong> Buah, sayur, gandum utuh</li>
+                      </ul>
+                      <p>Tambah 300 kalori per hari dari makanan sehat. Minum air putih minimal 8 gelas sehari.</p>`
+            },
+            6: {
+                judul: 'Manfaat Vitamin A untuk Kesehatan Mata Anak',
+                kategori: 'Imunisasi',
+                kategoriClass: 'bg-purple-100 text-purple-600',
+                img: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=800&h=600&fit=crop',
+                tanggal: '3 Januari 2024',
+                isi: `<p class="mb-4">Vitamin A memainkan peran penting dalam kesehatan penglihatan, pertumbuhan, dan sistem kekebalan tubuh anak.</p>
+                      <p class="mb-4"><strong>Manfaat Vitamin A:</strong></p>
+                      <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li>Mencegah kebutaan malam dan xerophthalmia</li>
+                        <li>Meningkatkan sistem imun tubuh</li>
+                        <li>Mendukung pertumbuhan sel dan jaringan</li>
+                        <li>Memelihara kesehatan kulit</li>
+                      </ul>
+                      <p><strong>Dosis Pemberian:</strong></p>
+                      <p>Bayi 6-11 bulan: 1 kapsul biru (100.000 SI)<br>
+                      Anak 12-59 bulan: 1 kapsul merah (200.000 SI)</p>
+                      <p class="mt-4">Pemberian dilakukan setiap 6 bulan sekali di Posyandu.</p>`
+            }
+        };
+
+        function filterArtikel(kategori) {
+            const items = document.querySelectorAll('.artikel-item');
+            items.forEach(item => {
+                if(kategori === 'all' || item.dataset.kategori === kategori) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function bukaArtikel(id) {
+            const artikel = artikelData[id];
+            if(artikel) {
+                document.getElementById('modal-artikel-img').src = artikel.img;
+                document.getElementById('modal-artikel-judul').textContent = artikel.judul;
+                document.getElementById('modal-artikel-isi').innerHTML = artikel.isi;
+                document.getElementById('modal-artikel-tanggal').textContent = artikel.tanggal;
+                
+                const kategoriEl = document.getElementById('modal-artikel-kategori');
+                kategoriEl.textContent = artikel.kategori;
+                kategoriEl.className = `inline-block px-4 py-1 rounded-full text-sm font-semibold mb-4 ${artikel.kategoriClass}`;
+                
+                document.getElementById('modal-artikel').style.display = 'block';
+            }
+        }
+
+        function tutupModalArtikel() {
+            document.getElementById('modal-artikel').style.display = 'none';
+        }
+
+        // Dokumentasi Functions
+        function showDokumentasiDetail(judul, isi) {
+            document.getElementById('dokumentasi-judul').textContent = judul;
+            document.getElementById('dokumentasi-isi').textContent = isi;
+            document.getElementById('modal-dokumentasi').style.display = 'block';
+        }
+
+        function tutupModalDokumentasi() {
+            document.getElementById('modal-dokumentasi').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modalArtikel = document.getElementById('modal-artikel');
+            const modalDokumentasi = document.getElementById('modal-dokumentasi');
+            if (event.target === modalArtikel) {
+                modalArtikel.style.display = 'none';
+            }
+            if (event.target === modalDokumentasi) {
+                modalDokumentasi.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('beranda');
+        });
+    </script>
+</body>
+</html>

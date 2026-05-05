@@ -4,57 +4,76 @@
 
 @section('content')
 <div class="p-8 max-w-7xl mx-auto space-y-8">
-    <div class="flex items-center gap-4 mb-12">
-        <i class="fas fa-newspaper text-4xl text-orange-400 bg-orange-500/20 p-4 rounded-2xl shadow-lg"></i>
+    <div class="flex items-center gap-4 mb-8">
+        <div class="w-16 h-16 bg-gradient-to-r from-orange-400 to-pink-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+            <i class="fas fa-newspaper"></i>
+        </div>
         <div>
-            <h1 class="text-4xl font-bold text-white mb-2">Artikel Kesehatan</h1>
-            <p class="text-xl text-slate-400">Tips kesehatan ibu, anak, dan gizi seimbang dari ahli posyandu</p>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Artikel Kesehatan</h1>
+            <p class="text-xl text-gray-500">Tips kesehatan ibu, anak, dan gizi seimbang dari ahli posyandu</p>
         </div>
     </div>
 
     <!-- Search & Filter -->
-    <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700">
+    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
         <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div class="relative max-w-md w-full">
-                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl"></i>
-                <input type="text" placeholder="Cari artikel kesehatan..." class="w-full pl-12 pr-6 py-4 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+
             </div>
             <div class="flex flex-wrap gap-2">
-                <button class="px-6 py-2 bg-blue-600/50 hover:bg-blue-600 text-white rounded-xl font-semibold border border-blue-500/30 transition-all whitespace-nowrap">Semua</button>
-                <button class="px-6 py-2 bg-emerald-600/50 hover:bg-emerald-600 text-white rounded-xl font-semibold border border-emerald-500/30 transition-all whitespace-nowrap">Gizi Anak</button>
-                <button class="px-6 py-2 bg-pink-600/50 hover:bg-pink-600 text-white rounded-xl font-semibold border border-pink-500/30 transition-all whitespace-nowrap">Ibu Hamil</button>
-                <button class="px-6 py-2 bg-purple-600/50 hover:bg-purple-600 text-white rounded-xl font-semibold border border-purple-500/30 transition-all whitespace-nowrap">Imunisasi</button>
+                <button class="px-6 py-2 bg-gray-800 text-white rounded-full font-semibold transition-all">Semua</button>
+                <button class="px-6 py-2 bg-green-500 text-white rounded-full font-semibold hover:bg-green-600 transition-all">
+                    <i class="fas fa-leaf mr-2"></i>Gizi Anak
+                </button>
+                <button class="px-6 py-2 bg-pink-500 text-white rounded-full font-semibold hover:bg-pink-600 transition-all">
+                    <i class="fas fa-female mr-2"></i>Ibu Hamil
+                </button>
+                <button class="px-6 py-2 bg-purple-500 text-white rounded-full font-semibold hover:bg-purple-600 transition-all">
+                    <i class="fas fa-syringe mr-2"></i>Imunisasi
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Artikel Cards -->
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($artikels as $artikel)
-        <div class="group bg-slate-800/70 backdrop-blur-sm rounded-3xl p-8 border border-slate-700 hover:border-orange-500 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden h-full">
+        <div class="group bg-white rounded-2xl p-6 border border-gray-100 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden h-full">
             <!-- Category Badge -->
-            <span class="inline-block px-4 py-2 bg-gradient-to-r from-emerald-600 text-white text-xs font-bold uppercase tracking-wider rounded-full mb-6 shadow-lg">Gizi Anak</span>
+            @php
+                $badgeColors = [
+                    'Gizi Anak' => 'bg-green-100 text-green-600',
+                    'Ibu Hamil' => 'bg-pink-100 text-pink-600',
+                    'Imunisasi' => 'bg-purple-100 text-purple-600'
+                ];
+                $badgeColor = $badgeColors[$artikel['kategori']] ?? 'bg-gray-100 text-gray-600';
+            @endphp
+            <span class="inline-block px-3 py-1 {{ $badgeColor }} text-xs font-semibold rounded-full mb-4">
+                {{ $artikel['kategori'] }}
+            </span>
             
-            <!-- Thumbnail Placeholder -->
-            <div class="w-full h-48 bg-gradient-to-br from-orange-400/20 to-red-400/20 rounded-2xl mb-6 group-hover:scale-105 transition-transform shadow-inner"></div>
+            <!-- Thumbnail with Image -->
+            <div class="w-full h-40 bg-gradient-to-br from-orange-100 to-pink-100 rounded-xl mb-4 group-hover:scale-105 transition-transform flex items-center justify-center overflow-hidden">
+                <img src="{{ asset('images/' . $artikel['gambar']) }}" alt="{{ $artikel['judul'] }}" class="w-full h-full object-cover rounded-xl">
+            </div>
             
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <div>
-                    <h3 class="text-2xl font-bold text-white leading-tight line-clamp-2 group-hover:text-orange-300 transition-colors mb-3">
+                    <h3 class="text-lg font-bold text-gray-800 leading-tight line-clamp-2 group-hover:text-orange-600 transition-colors mb-2">
                         {{ $artikel['judul'] }}
                     </h3>
-                    <p class="text-slate-400 leading-relaxed line-clamp-3 text-lg">
-                        {{ $artikel['isi'] }}
+<p class="text-gray-500 text-sm leading-relaxed line-clamp-3">
+                        {{ \Illuminate\Support\Str::limit($artikel['isi'], 100) }}
                     </p>
                 </div>
                 
-                <div class="flex items-center justify-between pt-6 border-t border-slate-700">
-                    <div class="flex items-center text-sm text-slate-500 space-x-4">
-                        <span><i class="fas fa-calendar mr-1"></i>12 Okt 2024</span>
+                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div class="flex items-center text-xs text-gray-400 space-x-3">
+                        <span><i class="fas fa-calendar mr-1"></i>{{ $artikel['tanggal'] }}</span>
                     </div>
-                    <button class="group/btn flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all whitespace-nowrap">
+                    <button onclick="openModal({{ $artikel['id'] }})" class="flex items-center space-x-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all text-sm">
+                        <span>Baca</span>
                         <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                        <span>Baca Selengkapnya</span>
                     </button>
                 </div>
             </div>
@@ -63,19 +82,67 @@
     </div>
 
     <!-- Pagination & CTA -->
-    <div class="flex flex-col md:flex-row gap-6 items-center justify-between pt-12 border-t border-slate-700">
-        <div class="text-sm text-slate-500">
-            Menampilkan 1-3 dari 15 artikel
+    <div class="flex flex-col md:flex-row gap-6 items-center justify-between pt-8 border-t border-gray-200">
+        <div class="text-sm text-gray-500">
+          
         </div>
-        <div class="flex gap-2">
-            <button class="w-12 h-12 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold transition-all">←</button>
-            <button class="w-12 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold shadow-lg transition-all">1</button>
-            <button class="w-12 h-12 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold transition-all">2</button>
-            <button class="w-12 h-12 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold transition-all">3</button>
-            <button class="w-12 h-12 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold transition-all">→</button>
+        
         </div>
     </div>
 </div>
+
+<!-- Modal for Article Detail -->
+<div id="articleModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 id="modalTitle" class="text-2xl font-bold text-gray-800"></h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <img id="modalImage" src="" alt="" class="w-full h-64 object-cover rounded-xl mb-4">
+            <div id="modalContent" class="text-gray-600 leading-relaxed text-justify"></div>
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeModal()" class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-all">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const articles = @json($artikels);
+
+function openModal(id) {
+    const article = articles.find(a => a.id === id);
+    if (article) {
+        document.getElementById('modalTitle').textContent = article.judul;
+        document.getElementById('modalImage').src = '/images/' + article.gambar;
+        document.getElementById('modalContent').textContent = article.isi;
+        document.getElementById('articleModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal() {
+    document.getElementById('articleModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+document.getElementById('articleModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+</script>
 
 <style>
 .line-clamp-2 {

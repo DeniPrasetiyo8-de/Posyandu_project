@@ -9,7 +9,7 @@ class Mother extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+protected $fillable = [
         'user_id',
         'nik',
         'nama_lengkap',
@@ -17,7 +17,8 @@ class Mother extends Model
         'tanggal_kehamilan',
         'berat_badan',
         'foto',
-        'posyandu_id'
+        'posyandu_id',
+        'trimester_status'
     ];
 
     protected $casts = [
@@ -44,7 +45,7 @@ class Mother extends Model
         return $this->foto ? asset('images/mothers/' . $this->foto) : null;
     }
 
-    // Calculate status kesehatan based on berat badan and tanggal kehamilan
+// Calculate status kesehatan based on berat badan and tanggal kehamilan
     public function getStatusKesehatanAttribute()
     {
         $mingguKehamilan = \Carbon\Carbon::parse($this->tanggal_kehamilan)->diffInWeeks(now());
@@ -67,5 +68,16 @@ class Mother extends Model
         } else {
             return 'Perlu Pemeriksaan';
         }
+    }
+    
+    // Daftar TT (Tablet Tambah Darah)
+    public static function getDaftarTT() {
+        return [
+            'tt1' => 'TT 1',
+            'tt2' => 'TT 2',
+            'tt3' => 'TT 3',
+            'tt4' => 'TT 4',
+            'tt5' => 'TT 5',
+        ];
     }
 }

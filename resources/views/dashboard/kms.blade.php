@@ -8,7 +8,7 @@
 <div class="p-8 max-w-7xl mx-auto space-y-8">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-4xl font-bold text-white mb-2 flex items-center">
+            <h1 class="text-4xl font-bold text-black mb-2 flex items-center">
                 <i class="fas fa-chart-line mr-4 text-blue-400 text-3xl"></i>
                 Kartu Menuju Sehat (KMS)
             </h1>
@@ -68,7 +68,7 @@
                             data-nama="{{ $mother->nama }}"
                             data-tanggal="{{ $mother->tanggal_kehamilan ?? now()->format('Y-m-d') }}"
                             data-berat="{{ $mother->berat_badan ?? 50 }}"
-                            data-berat-awal="{{ $mother->berat_badan_awal ?? null }}">
+                           selectedOption.dataset.beratAwal
                         {{ $mother->nama }} (Berat: {{ $mother->berat_badan ?? 50 }} kg)
                     </option>
                 @empty
@@ -137,105 +137,75 @@
          * Based on weight gain and pregnancy week
          * 
          * @param {number} beratBadan - Current weight in kg
-         * @param {string} tanggalKehamilton - Pregnancy start date (Y-m-d)
+         * @param {string} tanggalKehamilan - Pregnancy start date (Y-m-d)
          * @param {number|null} beratBadanAwal - Initial pregnancy weight (optional)
          * @returns {object} KMS calculation result
          */
-        function calculateIbuKMS(beratBadan, tanggalKehamilton, beratBadanAwal = null) {
-            const startDate = new Date(tanggalKehamilton);
-            const now = new Date();
-            
-            const diffTime = now - startDate;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            const mingguKehamilton = Math.max(1, Math.floor(diffDays / 7));
-            
-            let trimester = 1;
-            if (mingguKehamilton > 12 && mingguKehamilton <= 26) trimester = 2;
-            else if (mingguKehamilton > 26) trimester = 3;
-            
-            const beratBase = beratBadanAwal || 50;
-            
-            // Calculate ideal weight based on trimester
-            let totalGainIdeal;
-            if (mingguKehamilton <= 12) {
-                // Trimester 1: ~0.1 kg/week
-                totalGainIdeal = mingguKehamilton * 0.1;
-            } else if (mingguKehamilton <= 26) {
-                // Trimester 2: ~0.5 kg/week
-                totalGainIdeal = 1.2 + ((mingguKehamilton - 12) * 0.5);
-            } else {
-                // Trimester 3: ~0.5-0.8 kg/week
-                totalGainIdeal = 1.2 + 7 + ((mingguKehamilton - 26) * 0.5);
-            }
-            
-            const beratIdeal = beratBase + totalGainIdeal;
-            const totalBeratNaik = beratBadanAwal ? (beratBadan - beratBadanAwal) : (beratBadan - beratBase);
-            const selisihBerat = beratBadan - beratIdeal;
-            const selisihPersen = (selisihBerat / beratIdeal) * 100;
-            
-            // Weight gain ranges by week (based on WHO/standard guidelines)
-            const weekRanges = {
-                12: { min: 0, max: 2 },
-                20: { min: 3, max: 5 },
-                28: { min: 6, max: 10 },
-                36: { min: 8, max: 15 },
-                40: { min: 10, max: 18 }
-            };
-            
-            let minIdeal = 0, maxIdeal = 18;
-            const sortedWeeks = Object.keys(weekRanges).map(Number).sort((a, b) => a - b);
-            for (let i = 0; i < sortedWeeks.length; i++) {
-                if (mingguKehamilton <= sortedWeeks[i]) {
-                    minIdeal = weekRanges[sortedWeeks[i]].min;
-                    maxIdeal = weekRanges[sortedWeeks[i]].max;
-                    break;
-                }
-            }
-            
-            // Determine status
-            let status, keterangan, statusType;
-            if (totalBeratNaik < minIdeal) {
-                status = 'Kurang';
-                keterangan = 'Periksa';
-                statusType = 'danger';
-            } else if (totalBeratNaik > maxIdeal) {
-                status = 'Berlebih';
-                keterangan = 'Periksa';
-                statusType = 'warning';
-            } else {
-                status = 'Baik';
-                keterangan = 'Baik';
-                statusType = 'success';
-            }
-            
-            // Generate recommendation
-            let rekomendasi = '';
-            if (statusType === 'danger') {
-                rekomendasi = 'Berat badan kurang dari ideal. Segera konsultasikan ke bidan/tenaga kesehatan untuk evaluasi nutrisi.';
-            } else if (statusType === 'warning') {
-                rekomendasi = 'Pertambahan berat badan berlebihan. Perlu kontrol pola makan dan aktivitas fisik.';
-            } else {
-                rekomendasi = 'Berat badan naik sesuai dengan kurva normal kehamilan. Lanjutkan pola makan seimbang.';
-            }
-            
-            return {
-                mingguKehamilton,
-                trimester,
-                tanggalKehamilton,
-                beratBadanAwal: beratBase,
-                beratBadanSekarang: beratBadan,
-                beratIdeal: Math.round(beratIdeal * 10) / 10,
-                totalBeratNaikIdeal: Math.round(minIdeal * 10) / 10,
-                totalBeratNaikMaks: Math.round(maxIdeal * 10) / 10,
-                totalBeratNaik: Math.round(totalBeratNaik * 10) / 10,
-                selisihBerat: Math.round(selisihBerat * 10) / 10,
-                selisihPersen: Math.round(selisihPersen * 10) / 10,
-                status,
-                keterangan,
-                statusType,
-                rekomendasi
-            };
-        }
+       function calculateIbuKMS(beratBadan, tanggalKehamilan, beratBadanAwal = null) {
+    const startDate = new Date(tanggalKehamilan);
+    const now = new Date();
+
+    const diffDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+    const mingguKehamilan = Math.max(1, Math.floor(diffDays / 7));
+
+    // Trimester
+    let trimester = 1;
+    if (mingguKehamilan > 12 && mingguKehamilan <= 27) trimester = 2;
+    else if (mingguKehamilan > 27) trimester = 3;
+
+    const beratAwal = beratBadanAwal ?? beratBadan - 2; // fallback realistis
+
+    // Kurva kenaikan berat ideal
+    let kenaikanIdeal = 0;
+
+    if (mingguKehamilan <= 12) {
+        kenaikanIdeal = mingguKehamilan * 0.1;
+    } else if (mingguKehamilan <= 27) {
+        kenaikanIdeal = 1.2 + ((mingguKehamilan - 12) * 0.4);
+    } else {
+        kenaikanIdeal = 1.2 + (15 * 0.4) + ((mingguKehamilan - 27) * 0.5);
+    }
+
+    const beratIdeal = beratAwal + kenaikanIdeal;
+    const totalNaik = beratBadan - beratAwal;
+
+    // Range normal WHO (lebih realistis)
+    let min = 0, max = 0;
+
+    if (mingguKehamilan <= 12) {
+        min = 0; max = 2;
+    } else if (mingguKehamilan <= 27) {
+        min = 2; max = 8;
+    } else {
+        min = 8; max = 16;
+    }
+
+    let statusType, status;
+
+    if (totalNaik < min) {
+        statusType = 'danger';
+        status = 'Kurang';
+    } else if (totalNaik > max) {
+        statusType = 'warning';
+        status = 'Berlebih';
+    } else {
+        statusType = 'success';
+        status = 'Baik';
+    }
+
+    return {
+        mingguKehamilan,
+        trimester,
+        beratAwal,
+        beratBadan,
+        beratIdeal: +beratIdeal.toFixed(1),
+        totalNaik: +totalNaik.toFixed(1),
+        min,
+        max,
+        status,
+        statusType
+    };
+}
         
         /**
          * Get status badge HTML
@@ -269,7 +239,7 @@
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div class="bg-slate-900/50 rounded-xl p-4 text-center">
-                        <div class="text-3xl font-bold text-pink-400">${result.mingguKehamilton}</div>
+                        <div class="text-3xl font-bold text-pink-400">${result.mingguKehamilan}</div>
                         <div class="text-slate-400 text-sm">Minggu Kehamilan</div>
                     </div>
                     <div class="bg-slate-900/50 rounded-xl p-4 text-center">
@@ -385,18 +355,29 @@
         // FUNGSI CHART UNTUK ANAK
         // ============================================
         
-        function updateAnakCharts() {
+function updateAnakCharts() {
             if (!currentChildData) return;
 
             // Labels for chart
-            const labels = [...Array(currentChildData.healthRecords.length).keys()].map(i => `Pemeriksaan ${i+1}`).reverse();
+           const records = [...currentChildData.healthRecords];
+
+        // urutkan berdasarkan tanggal (kalau ada)
+        records.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+        // label = umur (bulan)
+            const labels = records.map(r => `${r.umur_bulan || currentChildData.umur} bln`);
+            labels.push(`${currentChildData.umur} bln`);
             labels.push('Saat Ini');
 
-            const beratData = currentChildData.healthRecords.slice().reverse().map(r => r.berat || currentChildData.berat);
-            beratData.push(currentChildData.berat);
+            // Use current child height/weight as base, fallback to 0 if not set
+            const currentTinggi = currentChildData.tinggi || 0;
+            const currentBerat = currentChildData.berat || 0;
 
-            const tinggiData = currentChildData.healthRecords.slice().reverse().map(r => r.tinggi || currentChildData.tinggi);
-            tinggiData.push(currentChildData.tinggi);
+            const beratData = currentChildData.healthRecords.slice().reverse().map(r => r.berat || currentBerat);
+            beratData.push(currentBerat);
+
+            const tinggiData = currentChildData.healthRecords.slice().reverse().map(r => r.tinggi || currentTinggi);
+            tinggiData.push(currentTinggi);
 
             // Growth Chart
             const ctxGrowth = document.getElementById('growthChart').getContext('2d');
@@ -449,18 +430,29 @@
             });
 
             // Gizi Status
-            const allRecords = [...currentChildData.healthRecords, {berat: currentChildData.berat, tinggi: currentChildData.tinggi}];
-            const statuses = allRecords.map(r => {
-                const tinggiM = (r.tinggi || 50) / 100;
-                const bbu = tinggiM > 0 ? (r.berat || 3) / (tinggiM * tinggiM) : 15;
-                if (bbu < 14) return 'Gizi Buruk';
-                if (bbu < 16) return 'Kurang';
-                if (bbu > 20) return 'Lebih';
-                return 'Baik';
-            });
+            // Gizi Status (berdasarkan BB/U)
+const allRecords = [...records, {
+    berat: currentChildData.berat,
+    umur_bulan: currentChildData.umur
+}];
 
-            const statusCount = {};
-            statuses.forEach(s => statusCount[s] = (statusCount[s] || 0) + 1);
+function getStatusLabel(bb, umur) {
+    const bbNormal = 3 + (umur * 0.5);
+
+    if (bb < bbNormal * 0.7) return 'Gizi Buruk';
+    if (bb < bbNormal * 0.85) return 'Kurang';
+    if (bb > bbNormal * 1.2) return 'Lebih';
+    return 'Baik';
+}
+
+const statuses = allRecords.map(r => 
+    getStatusLabel(r.berat || 0, r.umur_bulan || currentChildData.umur)
+);
+
+const statusCount = {};
+statuses.forEach(s => {
+    statusCount[s] = (statusCount[s] || 0) + 1;
+});
 
             const ctxGizi = document.getElementById('giziChart').getContext('2d');
             if (giziChart) giziChart.destroy();
@@ -498,18 +490,23 @@
             });
             document.getElementById('giziStats').innerHTML = statsHTML;
 
-            // Table
+// Table
             const tbody = document.getElementById('recordsTableBody');
             tbody.innerHTML = allRecords.slice().reverse().map((r, i) => {
-                const tinggiM = (r.tinggi || 50) / 100;
-                const bbu = tinggiM > 0 ? (r.berat || 3) / (tinggiM * tinggiM) : 15;
-                const statusHtml = calculateAnakStatus(r.berat || 3, r.tinggi || 50);
+                const recTinggi = r.tinggi || currentTinggi || 0;
+                const recBerat = r.berat || currentBerat || 0;
+                const tinggiM = recTinggi > 0 ? recTinggi / 100 : 0;
+                const bbu = tinggiM > 0 && recBerat > 0 ? recBerat / (tinggiM * tinggiM) : 15;
+                const statusHtml = calculateAnakStatus(recBerat || 3, recTinggi || 50);
+                const tinggiDisplay = recTinggi > 0 ? recTinggi.toFixed(1) : '-';
+                const beratDisplay = recBerat > 0 ? recBerat.toFixed(1) : '-';
+                const bbuDisplay = tinggiM > 0 && recBerat > 0 ? bbu.toFixed(1) : '-';
                 return `
                     <tr class="hover:bg-slate-800/50">
                         <td class="p-6">${i === allRecords.length - 1 ? 'Saat Ini' : 'Pemeriksaan ' + (allRecords.length - i - 1)}</td>
-                        <td class="p-6 font-mono text-lg font-bold text-green-400">${(r.berat || 3).toFixed(1)} kg</td>
-                        <td class="p-6 font-mono text-lg font-bold text-blue-400">${(r.tinggi || 50).toFixed(1)} cm</td>
-                        <td class="p-6 font-mono text-lg">${bbu.toFixed(1)}</td>
+                        <td class="p-6 font-mono text-lg font-bold text-green-400">${beratDisplay} kg</td>
+                        <td class="p-6 font-mono text-lg font-bold text-blue-400">${tinggiDisplay} cm</td>
+                        <td class="p-6 font-mono text-lg">${bbuDisplay}</td>
                         <td class="p-6">${statusHtml}</td>
                     </tr>
                 `;
@@ -517,6 +514,9 @@
         }
 
         function calculateAnakStatus(bb, tb) {
+            if (!bb || !tb || tb <= 0) {
+                return '<span class="px-3 py-1 bg-gray-500/20 text-gray-400 rounded-full font-bold text-sm border border-gray-500/30">-</span>';
+            }
             const tinggiM = tb / 100;
             const bbu = tinggiM > 0 ? bb / (tinggiM * tinggiM) : 15;
             if (bbu < 14) return '<span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full font-bold text-sm border border-red-500/30">Gizi Buruk</span>';
@@ -552,22 +552,22 @@
             
             const selectedOption = select.options[select.selectedIndex];
             const namaIbu = selectedOption.dataset.nama;
-            const tanggalKehamilton = selectedOption.dataset.tanggal;
+            const tanggalKehamilan = selectedOption.dataset.tanggal;
             const beratBadan = parseFloat(selectedOption.dataset.berat) || 50;
             const beratBadanAwal = selectedOption.dataset.beratAwal ? parseFloat(selectedOption.dataset.beratAwal) : null;
             
             // Calculate KMS using the calculateIbuKMS function
-            const kmsResult = calculateIbuKMS(beratBadan, tanggalKehamilton, beratBadanAwal);
+            const kmsResult = calculateIbuKMS(beratBadan, tanggalKehamilan, beratBadanAwal);
             
             // Generate labels untuk chart (minggu ke-0 sampai minggu sekarang)
             const labels = [];
-            for (let i = 0; i <= Math.min(kmsResult.mingguKehamilton, 40); i++) {
+            for (let i = 0; i <= Math.min(kmsResult.mingguKehamilan, 40); i++) {
                 labels.push('Mg ' + i);
             }
             
             // Generate berat ideal untuk setiap minggu
             const beratIdealData = [];
-            for (let i = 0; i <= Math.min(kmsResult.mingguKehamilton, 40); i++) {
+            for (let i = 0; i <= Math.min(kmsResult.mingguKehamilan, 40); i++) {
                 let gain;
                 if (i <= 12) {
                     gain = i * 0.1;
@@ -639,7 +639,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Perkembangan Kehamilan: Minggu ke-0 sampai Minggu ke-' + kmsResult.mingguKehamilton,
+                            text: 'Perkembangan Kehamilan: Minggu ke-0 sampai Minggu ke-' + kmsResult.mingguKehamilan,
                             color: '#e2e8f0',
                             font: {
                                 size: 14
@@ -727,14 +727,14 @@
                 <tr class="bg-slate-900/30">
                     <td colspan="5" class="p-4 text-center text-lg font-bold text-pink-400">
                         <i class="fas fa-user-pregnant mr-2"></i>
-                        ${namaIbu} - Minggu Ke-${kmsResult.mingguKehamilton} (Trimester ${kmsResult.trimester})
+                        ${namaIbu} - Minggu Ke-${kmsResult.mingguKehamilan} (Trimester ${kmsResult.trimester})
                     </td>
                 </tr>
             `;
             
             // Data rows per minggu
-            for (let i = 0; i <= Math.min(kmsResult.mingguKehamilton, 40); i++) {
-                const isCurrentWeek = i === kmsResult.mingguKehamilton;
+            for (let i = 0; i <= Math.min(kmsResult.mingguKehamilan, 40); i++) {
+                const isCurrentWeek = i === kmsResult.mingguKehamilan;
                 
                 // Calculate ideal weight for this week
                 let gain, beratIdealMinggu;
@@ -828,13 +828,13 @@
         /**
          * Get quick status without full card (for notifications/alerts)
          */
-        function getQuickStatusIbu(beratBadan, tanggalKehamilton, beratBadanAwal = null) {
-            const result = calculateIbuKMS(beratBadan, tanggalKehamilton, beratBadanAwal);
+        function getQuickStatusIbu(beratBadan, tanggalKehamilan, beratBadanAwal = null) {
+            const result = calculateIbuKMS(beratBadan, tanggalKehamilan, beratBadanAwal);
             return {
                 status: result.status,
                 keterangan: result.keterangan,
                 type: result.statusType,
-                minggu: result.mingguKehamilton,
+                minggu: result.mingguKehamilan,
                 beratIdeal: result.beratIdeal,
                 totalNaik: result.totalBeratNaik
             };
@@ -850,10 +850,10 @@
                 if (!data.berat_badan || data.berat_badan < 30 || data.berat_badan > 200) {
                     errors.push('Berat badan harus antara 30-200 kg');
                 }
-                if (!data.tanggal_kehamilton) {
+                if (!data.tanggal_Kehamilan) {
                     errors.push('Tanggal kehamilan harus diisi');
                 }
-                const startDate = new Date(data.tanggal_kehamilton);
+                const startDate = new Date(data.tanggal_Kehamilan);
                 const now = new Date();
                 if (startDate > now) {
                     errors.push('Tanggal kehamilan tidak boleh di masa depan');
