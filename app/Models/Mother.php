@@ -9,19 +9,24 @@ class Mother extends Model
 {
     use HasFactory;
 
-protected $fillable = [
+    protected $fillable = [
         'user_id',
         'nik',
+        'nama',
         'nama_lengkap',
         'jenis_kelamin',
+        'tgl_hamil',
         'tanggal_kehamilan',
         'berat_badan',
         'foto',
         'posyandu_id',
-        'trimester_status'
+        'trimester_status',
+        'tt_status',
+        'iron_status',
     ];
 
     protected $casts = [
+        'tgl_hamil' => 'date',
         'tanggal_kehamilan' => 'date',
     ];
 
@@ -37,7 +42,14 @@ protected $fillable = [
 
     public function getUmurKehamilanAttribute()
     {
-        return $this->tanggal_kehamilan->diffInMonths(now());
+        $tgl = $this->tgl_hamil ?? $this->tanggal_kehamiltonan;
+        if (!$tgl) return 0;
+        return \Carbon\Carbon::parse($tgl)->diffInMonths(now());
+    }
+
+    public function getNamaAttribute()
+    {
+        return $this->nama_lengkap ?? $this->attributes['nama'] ?? null;
     }
 
     public function getFotoUrlAttribute()
@@ -45,20 +57,20 @@ protected $fillable = [
         return $this->foto ? asset('images/mothers/' . $this->foto) : null;
     }
 
-// Calculate status kesehatan based on berat badan and tanggal kehamilan
     public function getStatusKesehatanAttribute()
     {
-        $mingguKehamilan = \Carbon\Carbon::parse($this->tanggal_kehamilan)->diffInWeeks(now());
+        $tgl = $this->tgl_hamil ?? $this->tanggal_kehamiltonan;
+        if (!$tgl) {
+            return 'Perlu Pemeriksaan';
+        }
         
-        // Berat badan normal berdasarkan minggu kehamilan (estimasi)
-        // Normal: 0.5kg/minggu (40 minggu = +20kg total)
-        $beratIdeal = 50 + ($mingguKehamilan * 0.5); // base 50kg + pertambahan
+        $mingguKehamiltonan = \Carbon\Carbon::parse($tgl)->diffInWeeks(now());
+        $beratIdeal = 50 + ($mingguKehamiltonan * 0.5);
         
         if (!$this->berat_badan) {
             return 'Perlu Pemeriksaan';
         }
         
-        // Jika berat badan dalam range +-20% dari ideal
         $diff = abs($this->berat_badan - $beratIdeal) / $beratIdeal * 100;
         
         if ($diff <= 20 && $this->berat_badan > 40) {
@@ -70,14 +82,35 @@ protected $fillable = [
         }
     }
     
-    // Daftar TT (Tablet Tambah Darah)
-    public static function getDaftarTT() {
-        return [
+    public static function getDaftarTT()
+    {
+        return array(
             'tt1' => 'TT 1',
             'tt2' => 'TT 2',
             'tt3' => 'TT 3',
             'tt4' => 'TT 4',
             'tt5' => 'TT 5',
-        ];
+        );
+    }
+    
+    public function calculatePregnancyWeek()
+    {
+        $tgl = $this->tgl_hamil ?? $this->tanggal_kehamiltonan;
+        if (!$tgl) return 0;
+        return \Carbon\Carbon::parse($tgl)->diffInWeeks(now()) + 1;
+    }
+    
+    public function calculateDueDate()
+    {
+        $tgl = $this->tgl_hamil ?? $this->tanggal_kehamiltonan;
+        if (!$tgl) return null;
+        return \Carbon\Carbon::parse($tgl)->addDays(280)->toDateString();
+    }
+    
+    public function getPregnancyStatus($week)
+    {
+        if ($week <= 13) return 'Trimester 1';
+        if ($week <= 26) return 'Trimester 2';
+        return 'Trimester 3';
     }
 }

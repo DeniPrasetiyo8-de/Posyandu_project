@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('mothers', function (Blueprint $table) {
+Schema::table('mothers', function (Blueprint $table) {
             // Status TT (Tablet Tambah Darah)
-            $table->enum('tt1', ['Sudah', 'Belum'])->default('Belum')->after('status_kesehatan');
+            $table->enum('tt1', ['Sudah', 'Belum'])->default('Belum')->after('posyandu_id');
             $table->enum('tt2', ['Sudah', 'Belum'])->default('Belum')->after('tt1');
             $table->enum('tt3', ['Sudah', 'Belum'])->default('Belum')->after('tt2');
             $table->enum('tt4', ['Sudah', 'Belum'])->default('Belum')->after('tt3');

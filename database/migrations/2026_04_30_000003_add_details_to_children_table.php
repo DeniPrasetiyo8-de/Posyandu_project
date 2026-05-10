@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     * NOTE: This migration runs AFTER 2026_04_12_084439_create_children_table.php
+     */
     public function up(): void
     {
         Schema::table('children', function (Blueprint $table) {
@@ -16,6 +20,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('children', function (Blueprint $table) {

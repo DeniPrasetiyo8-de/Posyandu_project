@@ -1,5 +1,29 @@
 @extends('layouts.app')
 
+@section('css')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<style>
+    .posyandu-card {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .posyandu-card:hover {
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    }
+    .swiper-slide {
+        height: 450px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    @media (max-width: 768px) {
+        .swiper-slide {
+            height: 400px;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
 <!-- Hero Section -->
 <section class="relative overflow-hidden bg-gradient-to-br from-pink-400 and via-blue-400 text-white py-24">
@@ -30,7 +54,7 @@
             </h1>
             
             <p class="text-xl md:text-2xl mb-12 text-white/90 max-w-2xl mx-auto leading-relaxed">
-                Tempat terbaik untuk tumbuh kembang anak Anda yang sehat dan ceria! 
+                Pelayanan Posyandu di Kelurahan Bahagia. Mendukung Kegiatan Posyandu di Kelurahan Bahagia Pengelolaan Data Posyandu Kelurahan Bahagia.
                 <i class="fas fa-heart text-pink-200 ml-2"></i>
             </p>
             
@@ -70,10 +94,9 @@
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Posyandu 1 -->
+<!-- Posyandu 1 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-pink-100 hover:border-pink-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-pink-400 to-pink-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
-                    <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-seedling text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-pink-600 transition-colors">Posyandu Mawar</h3>
@@ -91,11 +114,10 @@
                 </a>
             </div>
 
-            <!-- Posyandu 2 -->
+<!-- Posyandu 2 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-blue-100 hover:border-blue-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
-                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
-                    <i class="fas fa-flower-tulip text-white text-2xl"></i>
+                    <i class="fas fa-clover text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-blue-600 transition-colors">Posyandu Melati</h3>
                 <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Melati No. 45, Kel. Bahagia, Kec. Barat</p>
@@ -112,10 +134,9 @@
                 </a>
             </div>
 
-            <!-- Posyandu 3 -->
+<!-- Posyandu 3 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-purple-100 hover:border-purple-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
-                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-spa text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-purple-600 transition-colors">Posyandu Anggrek</h3>
@@ -133,13 +154,12 @@
                 </a>
             </div>
 
-            <!-- Posyandu 4 -->
+<!-- Posyandu 4 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-green-100 hover:border-green-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-green-400 to-blue-400 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
-                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-leaf text-white text-2xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-green-600 transition-colors">Posyandu Bintang</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-green-600 transition-colors">Posyandu Dahlia</h3>
                 <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Bintang No. 12, Kel. Kejora, Kec. Utara</p>
                 <div class="flex items-center justify-center space-x-4 mb-6 text-sm">
                     <span class="flex items-center text-green-600">
@@ -154,13 +174,12 @@
                 </a>
             </div>
 
-            <!-- Posyandu 5 -->
+<!-- Posyandu 5 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-yellow-100 hover:border-yellow-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
-                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-sun-plant-wilt text-white text-2xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-yellow-600 transition-colors">Posyandu Matahari</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-yellow-600 transition-colors">Posyandu Sakura</h3>
                 <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Matahari No. 56, Kel. Cerah, Kec. Selatan</p>
                 <div class="flex items-center justify-center space-x-4 mb-6 text-sm">
                     <span class="flex items-center text-green-600">
@@ -175,13 +194,12 @@
                 </a>
             </div>
 
-            <!-- Posyandu 6 -->
+<!-- Posyandu 6 -->
             <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-indigo-100 hover:border-indigo-200">
                 <div class="w-20 h-20 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
-                     <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
                     <i class="fas fa-dove text-white text-2xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-indigo-600 transition-colors">Posyandu Bulan</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-indigo-600 transition-colors">Posyandu Teratai</h3>
                 <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Bulan No. 89, Kel. Purnama Kec. Tengah</p>
                 <div class="flex items-center justify-center space-x-4 mb-6 text-sm">
                     <span class="flex items-center text-green-600">
@@ -269,9 +287,8 @@
 <section class="py-24 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div class="bg-gradient-to-r from-pink-400 to-blue-400 rounded-3xl p-12 shadow-2xl">
-            <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
-                <img src="{{ asset('images/LPG1.PNG') }}" alt="" class="w-full h-full object-cover rounded-full">
-                <i class="fas fa-heart-broken text-pink-500 text-4xl"></i>
+<div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
+                <i class="fab fa-whatsapp text-4xl"></i>
             </div>
             <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
                 Jangan Lewatkan Pemeriksaan Anak!

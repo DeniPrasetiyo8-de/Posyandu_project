@@ -10,9 +10,10 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_kegiatan',
+        'kegiatan',
         'tanggal',
         'rw',
+        'lokasi',
         'posyandu_id',
         'description',
     ];
@@ -24,7 +25,7 @@ class Schedule extends Model
 
     public function getIconAttribute()
     {
-        $nama = strtolower($this->nama_kegiatan);
+        $nama = strtolower($this->kegiatan);
         if (str_contains($nama, 'imunisasi')) return 'fa-syringe';
         if (str_contains($nama, 'vitamin') || str_contains($nama, 'capsule')) return 'fa-pills';
         if (str_contains($nama, 'timbang') || str_contains($nama, 'bb') || str_contains($nama, 'tb')) return 'fa-weight-hanging';

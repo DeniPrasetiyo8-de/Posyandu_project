@@ -1,8 +1,16 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
 use App\Services\MinimaxService;
 
-public function chat(Request $request, MinimaxService $minimax)
+class ChatController extends Controller
 {
-    $result = $minimax->chat($request->message);
+    public function chat(Request $request, MinimaxService $minimax)
+    {
+        $result = $minimax->chat($request->message);
 
-    return response()->json($result);
+        return response()->json($result);
+    }
 }

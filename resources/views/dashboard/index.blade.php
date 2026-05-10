@@ -14,7 +14,7 @@
         </div>
         <div class="flex gap-3">
             <a href="{{ route('children.index') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
-                <i class="fas fa-child mr-2"></i>Data Anak
+                <i class="fas fa-child mr-2"></i> Data Anak
             </a>
         </div>
     </div>
@@ -90,7 +90,7 @@
                                 <i class="fas fa-calendar-day text-white text-lg"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-gray-800 mb-1">{{ $jadwal->nama_kegiatan ?? 'Kegiatan Posyandu' }}</h3>
+                                <h3 class="text-xl font-bold text-gray-800 mb-1">{{ $jadwal->kegiatan ?? 'Kegiatan Posyandu' }}</h3>
                                 <span class="px-4 py-1 bg-green-100 text-green-600 text-sm font-semibold rounded-full">
                                     {{ \Carbon\Carbon::parse($jadwal->tanggal ?? now())->format('d M Y') }}
                                 </span>

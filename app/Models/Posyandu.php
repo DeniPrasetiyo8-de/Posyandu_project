@@ -9,7 +9,7 @@ class Posyandu extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama_posyandu', 'rw'];
+protected $fillable = ['nama_posyandu', 'nama_kader', 'alamat', 'rw', 'status_kehadiran', 'foto'];
 
     public function children()
     {
@@ -21,8 +21,13 @@ class Posyandu extends Model
         return $this->hasMany(Schedule::class);
     }
 
-    public function transactions()
+public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function kaders()
+    {
+        return $this->hasMany(Kader::class);
     }
 }

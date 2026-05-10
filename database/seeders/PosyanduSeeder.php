@@ -17,7 +17,7 @@ class PosyanduSeeder extends Seeder
 Posyandu::create(['nama_posyandu'=>'Posyandu Melati','rw'=>'02']);
 Posyandu::create(['nama_posyandu'=>'Posyandu Anggrek','rw'=>'03']);
 Posyandu::create(['nama_posyandu'=>'Posyandu Dahlia','rw'=>'04']);
-Posyandu::create(['nama_posyandu'=>'Posyandu Sakura','rw'=>'05']);
+Posyandu::create(['nama_posyandu'=>'Posyandu Sakuran','rw'=>'05']);
 Posyandu::create(['nama_posyandu'=>'Posyandu Teratai','rw'=>'06']);
     }
 }

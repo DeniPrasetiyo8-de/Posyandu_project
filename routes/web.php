@@ -39,10 +39,18 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(functi
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/jadwal', [App\Http\Controllers\AdminController::class, 'jadwal'])->name('jadwal');
+    Route::post('/jadwal', [App\Http\Controllers\AdminController::class, 'jadwalStore'])->name('jadwal.store');
+    Route::put('/jadwal/{schedule}', [App\Http\Controllers\AdminController::class, 'jadwalUpdate'])->name('jadwal.update');
+    Route::delete('/jadwal/{schedule}', [App\Http\Controllers\AdminController::class, 'jadwalDestroy'])->name('jadwal.destroy');
+    Route::get('/informasi', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi');
     Route::get('/informasi/anak', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi.anak');
     Route::get('/informasi/ibu', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi.ibu');
     Route::get('/kms', [App\Http\Controllers\AdminController::class, 'kmsAnalytics'])->name('kms');
-    Route::get('/kader', [App\Http\Controllers\AdminController::class, 'kader'])->name('kader');
+Route::get('/kader', [App\Http\Controllers\AdminController::class, 'kader'])->name('kader');
+    Route::post('/kader', [App\Http\Controllers\AdminController::class, 'kaderStore'])->name('kader.store');
+    Route::put('/kader/{kader}', [App\Http\Controllers\AdminController::class, 'kaderUpdate'])->name('kader.update');
+    Route::patch('/kader/{kader}/status', [App\Http\Controllers\AdminController::class, 'kaderUpdateStatus'])->name('kader.updateStatus');
+    Route::delete('/kader/{kader}', [App\Http\Controllers\AdminController::class, 'kaderDestroy'])->name('kader.destroy');
 });
 
 Route::middleware('auth')->group(function () {

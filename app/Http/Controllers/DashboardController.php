@@ -124,17 +124,18 @@ class DashboardController extends Controller
         return view('dashboard.kms', compact('children', 'mothers', 'healthRecords'));
     }
 
-    public function kader()
+public function kader()
     {
-        $posyandus = Posyandu::all()->map(function($posyandu) {
-            // Demo status: random hijau/merah
-            $posyandu->is_present = rand(0,1) ? true : false;
-            return $posyandu;
-        });
-        return view('dashboard.kader', compact('posyandus'));
+        // Ambil data kader yang sebenarnya dari database
+        $kaders = \App\Models\Kader::with('posyandu')->get();
+        
+        // Ambil semua posyandu untuk ditampilkan
+        $posyandus = Posyandu::all();
+        
+        return view('dashboard.kader', compact('kaders', 'posyandus'));
     }
 
-public function artikel()
+    public function artikel()
     {
         $artikels = [
             [
