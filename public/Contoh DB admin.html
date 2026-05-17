@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Posyandu</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --blue: #2563eb;
+      --blue-2: #06b6d4;
+      --pink: #ec4899;
+      --pink-2: #f472b6;
+      --dark: #0f172a;
+      --muted: #64748b;
+      --bg: #f8fafc;
+      --white: #ffffff;
+      --line: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --shadow: 0 20px 60px rgba(15, 23, 42, .12);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, .18), transparent 34%),
+        radial-gradient(circle at top right, rgba(236, 72, 153, .18), transparent 30%),
+        var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 292px;
+      position: fixed;
+      inset: 18px auto 18px 18px;
+      border-radius: 30px;
+      color: white;
+      background:
+        linear-gradient(160deg, rgba(37, 99, 235, .98), rgba(124, 58, 237, .94) 50%, rgba(236, 72, 153, .96)),
+        linear-gradient(#111827, #111827);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      z-index: 20;
+      overflow: hidden;
+    }
+
+    .sidebar::before {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      right: -80px;
+      top: -90px;
+    }
+
+    .sidebar::after {
+      content: "";
+      position: absolute;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      left: -80px;
+      bottom: -70px;
+    }
+
+    .brand {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 6px 22px;
+      border-bottom: 1px solid rgba(255,255,255,.18);
+      margin-bottom: 18px;
+    }
+
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.2);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+      font-size: 24px;
+    }
+
+    .brand h1 {
+      font-size: 18px;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 12px;
+      opacity: .8;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .nav {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      color: rgba(255,255,255,.86);
+      background: transparent;
+      transition: .25s ease;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .nav-btn small {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      opacity: .68;
+      margin-top: 2px;
+    }
+
+    .nav-btn .ico {
+      width: 34px;
+      height: 34px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.14);
+      flex: 0 0 auto;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: rgba(255,255,255,.18);
+      color: white;
+      transform: translateX(4px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.16);
+    }
+
+    .sidebar-footer {
+      position: absolute;
+      z-index: 1;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.14);
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.14);
+    }
+
+    .sidebar-footer strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-footer span {
+      display: block;
+      font-size: 12px;
+      opacity: .78;
+      line-height: 1.45;
+    }
+
+    .main {
+      width: 100%;
+      margin-left: 328px;
+      padding: 22px 28px 42px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin-bottom: 24px;
+      padding: 14px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.76);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 12px 40px rgba(15, 23, 42, .08);
+      border: 1px solid rgba(226, 232, 240, .8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mobile-menu {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--blue), var(--pink));
+      color: white;
+      font-size: 20px;
+    }
+
+    .page-title h2 {
+      font-size: clamp(22px, 3vw, 34px);
+      letter-spacing: -.04em;
+      line-height: 1.1;
+    }
+
+    .page-title p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+    }
+
+    .admin-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--blue-2), var(--pink));
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 900;
+      box-shadow: 0 12px 28px rgba(236, 72, 153, .25);
+    }
+
+    .admin-profile strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .admin-profile span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .section {
+      display: none;
+      animation: fadeUp .32s ease both;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .two-grid {
+      grid-template-columns: 1.15fr .85fr;
+    }
+
+    .three-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(226, 232, 240, .9);
+      border-radius: var(--radius);
+      box-shadow: 0 16px 48px rgba(15, 23, 42, .08);
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .stat-card {
+      position: relative;
+      min-height: 138px;
+    }
+
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      right: -36px;
+      top: -36px;
+      background: linear-gradient(135deg, rgba(37,99,235,.16), rgba(236,72,153,.16));
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 17px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(37,99,235,.13), rgba(236,72,153,.13));
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .stat-card strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 32px;
+      letter-spacing: -.04em;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .card-head h3 {
+      font-size: 18px;
+      letter-spacing: -.02em;
+    }
+
+    .card-head p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 15px;
+      padding: 12px 14px;
+      outline: none;
+      color: var(--dark);
+      transition: .2s ease;
+    }
+
+    .textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .input:focus, .select:focus, .textarea:focus {
+      border-color: rgba(37, 99, 235, .65);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, .1);
+    }
+
+    .toolbar .input {
+      max-width: 340px;
+    }
+
+    .toolbar .select {
+      max-width: 220px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 15px;
+      font-weight: 800;
+      transition: .22s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--pink));
+      box-shadow: 0 14px 30px rgba(37, 99, 235, .2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 38px rgba(236, 72, 153, .22);
+    }
+
+    .btn-soft {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .btn-pink {
+      background: #fdf2f8;
+      color: #be185d;
+    }
+
+    .btn-danger {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #475569;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      font-weight: 900;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .badge-blue {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .badge-pink {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    .badge-green {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .badge-yellow {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .badge-red {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+    }
+
+    .list-item strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .list-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .quick-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .quick-actions .btn {
+      justify-content: flex-start;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(236,72,153,.08));
+      color: var(--dark);
+      border: 1px solid rgba(226,232,240,.9);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 7px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 850;
+      color: #334155;
+    }
+
+    .hint-box {
+      border-radius: 20px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(236,72,153,.08));
+      border: 1px solid rgba(226,232,240,.95);
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .chart-box {
+      height: 330px;
+      position: relative;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .58);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 80;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+      animation: fade .18s ease both;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal {
+      width: min(720px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 30px 90px rgba(15,23,42,.28);
+      animation: zoomIn .22s ease both;
+    }
+
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        transform: scale(.96) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-head {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(236,72,153,.08));
+    }
+
+    .modal-head h3 {
+      font-size: 20px;
+      letter-spacing: -.03em;
+    }
+
+    .modal-body {
+      padding: 22px;
+    }
+
+    .close {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: white;
+      color: var(--dark);
+      font-size: 22px;
+    }
+
+    .empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 18px;
+    }
+
+    .overlay {
+      display: none;
+    }
+
+    @media (max-width: 1100px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .two-grid, .three-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .sidebar {
+        transform: translateX(-115%);
+        transition: .28s ease;
+        inset: 12px auto 12px 12px;
+        width: min(310px, calc(100vw - 24px));
+      }
+
+      body.sidebar-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, .35);
+        z-index: 15;
+      }
+
+      body.sidebar-open .overlay {
+        display: block;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 12px;
+      }
+
+      .mobile-menu {
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+      }
+
+      .topbar {
+        border-radius: 22px;
+      }
+
+      .admin-profile div:not(.admin-avatar) {
+        display: none;
+      }
+
+      .sidebar-footer {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        margin-top: 16px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar .input,
+      .toolbar .select,
+      .toolbar .btn {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 20px;
+      }
+
+      .list-item {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-logo">💙</div>
+        <div>
+          <h1>Admin Posyandu</h1>
+          <span>Sistem Manajemen Kesehatan</span>
+        </div>
+      </div>
+
+      <nav class="nav" id="nav">
+        <button class="nav-btn active" data-page="dashboard" data-url="/admin/dashboard">
+          <span class="ico">🏠</span>
+          <span>Dashboard<small>/admin/dashboard</small></span>
+        </button>
+        <button class="nav-btn" data-page="jadwal" data-url="/admin/jadwal">
+          <span class="ico">📅</span>
+          <span>Kelola Jadwal<small>Schedule Management</small></span>
+        </button>
+        <button class="nav-btn" data-page="kader" data-url="/admin/kader">
+          <span class="ico">👩‍⚕️</span>
+          <span>Kelola Kader<small>Kader Management</small></span>
+        </button>
+        <button class="nav-btn" data-page="informasi" data-url="/admin/informasi">
+          <span class="ico">🔍</span>
+          <span>Cari Informasi<small>Data Anak & Ibu Hamil</small></span>
+        </button>
+        <button class="nav-btn" data-page="kms" data-url="/admin/kms">
+          <span class="ico">📊</span>
+          <span>KMS Analytics<small>Analisis Status Gizi</small></span>
+        </button>
+        <button class="nav-btn" data-page="artikel" data-url="/admin/artikel">
+          <span class="ico">📰</span>
+          <span>Kelola Artikel<small>Article Management</small></span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <strong>Login sebagai Admin</strong>
+        <span>Setelah login, sistem otomatis mengarahkan ke halaman dashboard admin.</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu">☰</button>
+        <div class="page-title">
+          <h2 id="pageTitle">Dashboard Admin</h2>
+          <p id="pageDesc">Overview seluruh data sistem posyandu.</p>
+        </div>
+        <div class="admin-profile">
+          <div>
+            <strong>Admin Posyandu</strong>
+            <span id="currentUrl">/admin/dashboard</span>
+          </div>
+          <div class="admin-avatar">A</div>
+        </div>
+      </header>
+
+      <section class="section active" id="dashboard">
+        <div class="grid stats-grid">
+          <div class="card stat-card">
+            <div class="stat-icon">👶</div>
+            <span>Total Anak</span>
+            <strong id="statAnak">0</strong>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">📅</div>
+            <span>Jadwal Kegiatan</span>
+            <strong id="statJadwal">0</strong>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">🏥</div>
+            <span>Posyandu</span>
+            <strong>5</strong>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">📋</div>
+            <span>Rekam Medis KMS</span>
+            <strong id="statKms">0</strong>
+          </div>
+        </div>
+
+        <div class="grid two-grid">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3>Jadwal Kegiatan Terbaru</h3>
+                <p>Aktivitas posyandu yang paling dekat pelaksanaannya.</p>
+              </div>
+              <button class="btn btn-soft" onclick="goPage('jadwal')">Lihat Semua</button>
+            </div>
+            <div class="list" id="latestSchedules"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3>Akses Cepat</h3>
+                <p>Navigasi cepat ke fitur utama admin.</p>
+              </div>
+            </div>
+            <div class="quick-actions">
+              <button class="btn" onclick="goPage('jadwal')">➕ Tambah Jadwal Baru</button>
+              <button class="btn" onclick="goPage('kader')">👩‍⚕️ Kelola Data Kader</button>
+              <button class="btn" onclick="goPage('informasi')">🔍 Cari Data Anak/Ibu</button>
+              <button class="btn" onclick="goPage('kms')">📊 Lihat Grafik KMS</button>
+              <button class="btn" onclick="goPage('artikel')">📰 Tambah Artikel Kesehatan</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head">
+            <div>
+              <h3>Anak Terbaru Terdaftar</h3>
+              <p>Daftar registrasi anak terbaru di sistem posyandu.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama Anak</th>
+                  <th>NIK</th>
+                  <th>RW</th>
+                  <th>Posyandu</th>
+                  <th>Status Gizi</th>
+                </tr>
+              </thead>
+              <tbody id="latestChildren"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="jadwal">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>📅 Kelola Jadwal Kegiatan</h3>
+              <p>Tambah, edit, hapus, dan cari jadwal berdasarkan nama kegiatan.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openScheduleModal()">➕ Tambah Jadwal Baru</button>
+          </div>
+          <div class="toolbar">
+            <input class="input" id="searchSchedule" placeholder="Cari nama kegiatan..." oninput="renderSchedules()" />
+            <button class="btn btn-soft" onclick="document.getElementById('searchSchedule').value='';renderSchedules()">Reset</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama Kegiatan</th>
+                  <th>Tanggal</th>
+                  <th>Lokasi</th>
+                  <th>Posyandu</th>
+                  <th>Deskripsi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="hint-box" style="margin-top:18px;">
+          <strong>Cara Penggunaan:</strong> isi Nama Kegiatan, pilih tanggal pelaksanaan, lokasi, posyandu tujuan, deskripsi opsional, lalu klik <b>Simpan Jadwal</b>. Untuk edit klik ikon ✏️, dan untuk hapus klik 🗑️ lalu konfirmasi.
+        </div>
+      </section>
+
+      <section class="section" id="kader">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>👩‍⚕️ Kelola Kader</h3>
+              <p>CRUD data kader, update kehadiran, filter posyandu, dan pencarian nama.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openKaderModal()">➕ Tambah Kader Baru</button>
+          </div>
+
+          <div class="toolbar">
+            <input class="input" id="searchKader" placeholder="Cari nama kader..." oninput="renderKaders()" />
+            <select class="select" id="filterKaderPosyandu" onchange="renderKaders()">
+              <option value="">Semua Posyandu</option>
+              <option>Posyandu Melati</option>
+              <option>Posyandu Mawar</option>
+              <option>Posyandu Anggrek</option>
+              <option>Posyandu Kenanga</option>
+              <option>Posyandu Sakura</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama Kader</th>
+                  <th>Posyandu</th>
+                  <th>Alamat</th>
+                  <th>No HP</th>
+                  <th>RW</th>
+                  <th>Status Kehadiran</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="kaderTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="informasi">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>🔍 Cari Informasi</h3>
+              <p>Cari data anak atau ibu hamil berdasarkan nama/NIK, serta filter RW.</p>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <select class="select" id="infoType" onchange="renderInfoSearch()">
+              <option value="anak">Data Anak</option>
+              <option value="ibu">Data Ibu Hamil</option>
+            </select>
+            <input class="input" id="infoKeyword" placeholder="Masukkan nama atau NIK..." oninput="renderInfoSearch()" />
+            <select class="select" id="infoRw" onchange="renderInfoSearch()">
+              <option value="">Semua RW</option>
+              <option>RW 01</option>
+              <option>RW 02</option>
+              <option>RW 03</option>
+              <option>RW 04</option>
+              <option>RW 05</option>
+            </select>
+            <button class="btn btn-primary" onclick="renderInfoSearch()">Cari</button>
+          </div>
+
+          <div id="infoResult"></div>
+        </div>
+      </section>
+
+      <section class="section" id="kms">
+        <div class="grid stats-grid">
+          <div class="card stat-card">
+            <div class="stat-icon">🟢</div>
+            <span>Gizi Baik</span>
+            <strong id="giziBaik">0</strong>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">🟡</div>
+            <span>Gizi Kurang</span>
+            <strong id="giziKurang">0</strong>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">🔴</div>
+            <span>Gizi Buruk</span>
+            <strong id="giziBuruk">0</strong>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">🔵</div>
+            <span>Gizi Lebih</span>
+            <strong id="giziLebih">0</strong>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>📊 KMS Analytics</h3>
+              <p>Filter berdasarkan posyandu dan lihat grafik distribusi status gizi.</p>
+            </div>
+            <select class="select" id="kmsFilter" onchange="renderKms()">
+              <option value="">Semua Posyandu</option>
+              <option>Posyandu Melati</option>
+              <option>Posyandu Mawar</option>
+              <option>Posyandu Anggrek</option>
+              <option>Posyandu Kenanga</option>
+              <option>Posyandu Sakura</option>
+            </select>
+          </div>
+
+          <div class="grid two-grid">
+            <div class="card" style="box-shadow:none;">
+              <div class="card-head">
+                <div>
+                  <h3>Doughnut Chart</h3>
+                  <p>Distribusi status gizi anak.</p>
+                </div>
+              </div>
+              <div class="chart-box">
+                <canvas id="doughnutChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card" style="box-shadow:none;">
+              <div class="card-head">
+                <div>
+                  <h3>Bar Chart</h3>
+                  <p>Perbandingan jumlah berdasarkan status.</p>
+                </div>
+              </div>
+              <div class="chart-box">
+                <canvas id="barChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head">
+            <div>
+              <h3>Daftar Anak dengan Gizi Kurang/Buruk</h3>
+              <p>Prioritas pemantauan dan tindak lanjut kader posyandu.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama Anak</th>
+                  <th>NIK</th>
+                  <th>RW</th>
+                  <th>Posyandu</th>
+                  <th>Status</th>
+                  <th>Catatan</th>
+                </tr>
+              </thead>
+              <tbody id="riskChildren"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="artikel">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3>📰 Kelola Artikel Kesehatan</h3>
+              <p>Tambah, edit, hapus, filter kategori, dan cari artikel berdasarkan judul/isi.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openArticleModal()">➕ Tambah Artikel</button>
+          </div>
+
+          <div class="toolbar">
+            <input class="input" id="searchArticle" placeholder="Cari judul atau isi artikel..." oninput="renderArticles()" />
+            <select class="select" id="filterArticleCategory" onchange="renderArticles()">
+              <option value="">Semua Kategori</option>
+              <option>Gizi Anak</option>
+              <option>Ibu Hamil</option>
+              <option>Imunisasi</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Judul</th>
+                  <th>Kategori</th>
+                  <th>Isi Ringkas</th>
+                  <th>Gambar</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="articleTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid three-grid" style="margin-top:18px;">
+          <div class="hint-box">🟢 <b>Gizi Anak</b><br>Artikel tentang nutrisi dan makanan untuk anak.</div>
+          <div class="hint-box">🟣 <b>Ibu Hamil</b><br>Artikel tentang kesehatan ibu hamil.</div>
+          <div class="hint-box">🔵 <b>Imunisasi</b><br>Artikel tentang jadwal dan jenis imunisasi.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">Modal</h3>
+        <button class="close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const posyanduList = ["Posyandu Melati", "Posyandu Mawar", "Posyandu Anggrek", "Posyandu Kenanga", "Posyandu Sakura"];
+
+    let schedules = [
+      { id: 1, name: "Imunisasi DPT-HB-HiB", date: "2026-02-12", location: "Balai RW 05", posyandu: "Posyandu Melati", desc: "Imunisasi rutin bayi dan balita." },
+      { id: 2, name: "Penimbangan Balita", date: "2026-02-18", location: "Aula Kelurahan", posyandu: "Posyandu Mawar", desc: "Pemantauan berat dan tinggi badan." },
+      { id: 3, name: "Kelas Ibu Hamil", date: "2026-02-24", location: "Puskesmas Pembantu", posyandu: "Posyandu Anggrek", desc: "Edukasi kehamilan sehat." },
+      { id: 4, name: "Pemberian Vitamin A", date: "2026-03-03", location: "Balai RW 02", posyandu: "Posyandu Kenanga", desc: "Distribusi kapsul vitamin A." }
+    ];
+
+    let kaders = [
+      { id: 1, name: "Siti Aminah", posyandu: "Posyandu Melati", address: "Jl. Mawar No. 12", phone: "6289512345678", rw: "RW 05", status: "Hadir" },
+      { id: 2, name: "Rina Lestari", posyandu: "Posyandu Mawar", address: "Jl. Anggrek No. 8", phone: "6281211122233", rw: "RW 02", status: "Tidak Hadir" },
+      { id: 3, name: "Dewi Kartika", posyandu: "Posyandu Anggrek", address: "Jl. Melati No. 9", phone: "628777333444", rw: "RW 03", status: "Hadir" },
+      { id: 4, name: "Nurhayati", posyandu: "Posyandu Kenanga", address: "Jl. Kenanga No. 4", phone: "6285698765432", rw: "RW 01", status: "Hadir" }
+    ];
+
+    const children = [
+      { name: "Alya Putri", nik: "3275010101220001", rw: "RW 05", posyandu: "Posyandu Melati", status: "Gizi Baik", note: "Pertumbuhan sesuai usia." },
+      { name: "Bima Pratama", nik: "3275010503210002", rw: "RW 02", posyandu: "Posyandu Mawar", status: "Gizi Kurang", note: "Perlu konseling nutrisi." },
+      { name: "Citra Aulia", nik: "3275010909200003", rw: "RW 03", posyandu: "Posyandu Anggrek", status: "Gizi Lebih", note: "Pantau pola makan." },
+      { name: "Daffa Ramadhan", nik: "3275011111190004", rw: "RW 01", posyandu: "Posyandu Kenanga", status: "Gizi Buruk", note: "Rujuk puskesmas." },
+      { name: "Elina Safitri", nik: "3275011907220005", rw: "RW 04", posyandu: "Posyandu Sakura", status: "Gizi Baik", note: "Aktif dan sehat." },
+      { name: "Fajar Nugraha", nik: "3275010109210006", rw: "RW 05", posyandu: "Posyandu Melati", status: "Gizi Kurang", note: "Evaluasi bulan depan." },
+      { name: "Gita Permata", nik: "3275011405200007", rw: "RW 02", posyandu: "Posyandu Mawar", status: "Gizi Baik", note: "Pertumbuhan baik." },
+      { name: "Hana Kirana", nik: "3275012208230008", rw: "RW 03", posyandu: "Posyandu Anggrek", status: "Gizi Baik", note: "Lengkapi imunisasi." }
+    ];
+
+    const pregnantMothers = [
+      { name: "Maya Sari", nik: "3275014501980001", rw: "RW 01", age: "27 tahun", gestation: "24 minggu", posyandu: "Posyandu Kenanga", note: "Tekanan darah normal." },
+      { name: "Nabila Putri", nik: "3275015202960002", rw: "RW 05", age: "30 tahun", gestation: "31 minggu", posyandu: "Posyandu Melati", note: "Perlu tablet tambah darah." },
+      { name: "Oktavia Rahma", nik: "3275016003010003", rw: "RW 02", age: "25 tahun", gestation: "18 minggu", posyandu: "Posyandu Mawar", note: "Kontrol rutin." }
+    ];
+
+    let articles = [
+      { id: 1, title: "Menu Seimbang untuk Balita", category: "Gizi Anak", content: "Panduan pemenuhan karbohidrat, protein, lemak baik, vitamin, dan mineral untuk mendukung tumbuh kembang balita.", image: "Ada" },
+      { id: 2, title: "Tanda Bahaya Kehamilan", category: "Ibu Hamil", content: "Kenali tanda bahaya seperti perdarahan, nyeri kepala hebat, pembengkakan ekstrem, dan gerak janin berkurang.", image: "Tidak Ada" },
+      { id: 3, title: "Jadwal Imunisasi Dasar Lengkap", category: "Imunisasi", content: "Informasi imunisasi BCG, Polio, DPT-HB-HiB, Campak Rubella, dan jadwal pemberiannya.", image: "Ada" }
+    ];
+
+    const pageMeta = {
+      dashboard: ["Dashboard Admin", "Overview seluruh data sistem posyandu.", "/admin/dashboard"],
+      jadwal: ["Kelola Jadwal", "CRUD jadwal kegiatan posyandu.", "/admin/jadwal"],
+      kader: ["Kelola Kader", "CRUD kader dan status kehadiran.", "/admin/kader"],
+      informasi: ["Cari Informasi", "Pencarian data anak dan ibu hamil.", "/admin/informasi"],
+      kms: ["KMS Analytics", "Analisis statistik status gizi anak.", "/admin/kms"],
+      artikel: ["Kelola Artikel", "CRUD artikel kesehatan posyandu.", "/admin/artikel"]
+    };
+
+    let doughnutChart, barChart;
+
+    const badgeClass = (status) => {
+      if (status === "Gizi Baik" || status === "Hadir") return "badge-green";
+      if (status === "Gizi Kurang") return "badge-yellow";
+      if (status === "Gizi Buruk" || status === "Tidak Hadir") return "badge-red";
+      if (status === "Gizi Lebih") return "badge-blue";
+      if (status === "Gizi Anak") return "badge-green";
+      if (status === "Ibu Hamil") return "badge-pink";
+      return "badge-blue";
+    };
+
+    const formatDate = (date) => {
+      return new Date(date + "T00:00:00").toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      });
+    };
+
+    function goPage(page) {
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.getElementById(page).classList.add("active");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.page === page);
+      });
+
+      document.getElementById("pageTitle").textContent = pageMeta[page][0];
+      document.getElementById("pageDesc").textContent = pageMeta[page][1];
+      document.getElementById("currentUrl").textContent = pageMeta[page][2];
+
+      try {
+        history.pushState({ page }, "", pageMeta[page][2]);
+      } catch (e) {}
+
+      document.body.classList.remove("sidebar-open");
+
+      if (page === "kms") setTimeout(renderKms, 50);
+      if (page === "dashboard") renderDashboard();
+      if (page === "jadwal") renderSchedules();
+      if (page === "kader") renderKaders();
+      if (page === "informasi") renderInfoSearch();
+      if (page === "artikel") renderArticles();
+    }
+
+    document.getElementById("nav").addEventListener("click", (e) => {
+      const btn = e.target.closest(".nav-btn");
+      if (btn) goPage(btn.dataset.page);
+    });
+
+    document.getElementById("mobileMenu").addEventListener("click", () => {
+      document.body.classList.add("sidebar-open");
+    });
+
+    document.getElementById("overlay").addEventListener("click", () => {
+      document.body.classList.remove("sidebar-open");
+    });
+
+    function renderDashboard() {
+      document.getElementById("statAnak").textContent = children.length;
+      document.getElementById("statJadwal").textContent = schedules.length;
+      document.getElementById("statKms").textContent = children.length;
+
+      const latestSchedules = [...schedules].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
+      document.getElementById("latestSchedules").innerHTML = latestSchedules.map(s => `
+        <div class="list-item">
+          <div>
+            <strong>${s.name}</strong>
+            <span>${formatDate(s.date)} • ${s.location} • ${s.posyandu}</span>
+          </div>
+          <span class="badge badge-blue">Terjadwal</span>
+        </div>
+      `).join("");
+
+      document.getElementById("latestChildren").innerHTML = children.slice(-5).reverse().map(c => `
+        <tr>
+          <td><strong>${c.name}</strong></td>
+          <td>${c.nik}</td>
+          <td>${c.rw}</td>
+          <td>${c.posyandu}</td>
+          <td><span class="badge ${badgeClass(c.status)}">${c.status}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function renderSchedules() {
+      const q = document.getElementById("searchSchedule")?.value.toLowerCase() || "";
+      const data = schedules.filter(s => s.name.toLowerCase().includes(q));
+
+      document.getElementById("scheduleTable").innerHTML = data.length ? data.map(s => `
+        <tr>
+          <td><strong>${s.name}</strong></td>
+          <td>${formatDate(s.date)}</td>
+          <td>${s.location}</td>
+          <td>${s.posyandu}</td>
+          <td>${s.desc || "-"}</td>
+          <td>
+            <button class="btn btn-soft btn-icon" title="Edit" onclick="openScheduleModal(${s.id})">✏️</button>
+            <button class="btn btn-danger btn-icon" title="Hapus" onclick="deleteSchedule(${s.id})">🗑️</button>
+          </td>
+        </tr>
+      `).join("") : `<tr><td colspan="6"><div class="empty">Jadwal tidak ditemukan.</div></td></tr>`;
+
+      renderDashboard();
+    }
+
+    function openScheduleModal(id = null) {
+      const item = schedules.find(s => s.id === id) || { name: "", date: "", location: "", posyandu: posyanduList[0], desc: "" };
+      openModal(id ? "✏️ Edit Jadwal" : "➕ Tambah Jadwal Baru", `
+        <form onsubmit="saveSchedule(event, ${id || "null"})">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Nama Kegiatan</label>
+              <input class="input" name="name" value="${item.name}" placeholder="Contoh: Imunisasi DPT-HB-HiB" required>
+            </div>
+            <div class="form-group">
+              <label>Tanggal Pelaksanaan</label>
+              <input class="input" type="date" name="date" value="${item.date}" required>
+            </div>
+            <div class="form-group">
+              <label>Lokasi</label>
+              <input class="input" name="location" value="${item.location}" placeholder="Contoh: Balai RW 05" required>
+            </div>
+            <div class="form-group full">
+              <label>Posyandu Tujuan</label>
+              <select class="select" name="posyandu">${posyanduList.map(p => `<option ${p === item.posyandu ? "selected" : ""}>${p}</option>`).join("")}</select>
+            </div>
+            <div class="form-group full">
+              <label>Deskripsi Opsional</label>
+              <textarea class="textarea" name="desc" placeholder="Tambahkan deskripsi kegiatan...">${item.desc}</textarea>
+            </div>
+            <div class="form-group full">
+              <button class="btn btn-primary" type="submit">${id ? "Simpan" : "Simpan Jadwal"}</button>
+            </div>
+          </div>
+        </form>
+      `);
+    }
+
+    function saveSchedule(e, id) {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const data = {
+        id: id || Date.now(),
+        name: f.get("name"),
+        date: f.get("date"),
+        location: f.get("location"),
+        posyandu: f.get("posyandu"),
+        desc: f.get("desc")
+      };
+
+      if (id) schedules = schedules.map(s => s.id === id ? data : s);
+      else schedules.unshift(data);
+
+      closeModal();
+      renderSchedules();
+    }
+
+    function deleteSchedule(id) {
+      if (confirm("Hapus jadwal ini?")) {
+        schedules = schedules.filter(s => s.id !== id);
+        renderSchedules();
+      }
+    }
+
+    function renderKaders() {
+      const q = document.getElementById("searchKader")?.value.toLowerCase() || "";
+      const p = document.getElementById("filterKaderPosyandu")?.value || "";
+
+      const data = kaders.filter(k => k.name.toLowerCase().includes(q) && (!p || k.posyandu === p));
+
+      document.getElementById("kaderTable").innerHTML = data.length ? data.map(k => `
+        <tr>
+          <td><strong>${k.name}</strong></td>
+          <td>${k.posyandu}</td>
+          <td>${k.address || "-"}</td>
+          <td>${k.phone || "-"}</td>
+          <td>${k.rw}</td>
+          <td>
+            <select class="select" style="min-width:150px;" onchange="updateKaderStatus(${k.id}, this.value)">
+              <option ${k.status === "Hadir" ? "selected" : ""}>Hadir</option>
+              <option ${k.status === "Tidak Hadir" ? "selected" : ""}>Tidak Hadir</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-soft btn-icon" onclick="openKaderModal(${k.id})">✏️</button>
+            <button class="btn btn-danger btn-icon" onclick="deleteKader(${k.id})">🗑️</button>
+          </td>
+        </tr>
+      `).join("") : `<tr><td colspan="7"><div class="empty">Data kader tidak ditemukan.</div></td></tr>`;
+    }
+
+    function updateKaderStatus(id, status) {
+      kaders = kaders.map(k => k.id === id ? { ...k, status } : k);
+      renderKaders();
+    }
+
+    function openKaderModal(id = null) {
+      const item = kaders.find(k => k.id === id) || { name: "", posyandu: posyanduList[0], address: "", phone: "", rw: "RW 01", status: "Hadir" };
+      openModal(id ? "✏️ Edit Kader" : "➕ Tambah Kader Baru", `
+        <form onsubmit="saveKader(event, ${id || "null"})">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Nama Kader</label>
+              <input class="input" name="name" value="${item.name}" required>
+            </div>
+            <div class="form-group">
+              <label>Posyandu</label>
+              <select class="select" name="posyandu">${posyanduList.map(p => `<option ${p === item.posyandu ? "selected" : ""}>${p}</option>`).join("")}</select>
+            </div>
+            <div class="form-group">
+              <label>RW</label>
+              <select class="select" name="rw">${["RW 01","RW 02","RW 03","RW 04","RW 05"].map(r => `<option ${r === item.rw ? "selected" : ""}>${r}</option>`).join("")}</select>
+            </div>
+            <div class="form-group">
+              <label>Alamat Opsional</label>
+              <input class="input" name="address" value="${item.address}">
+            </div>
+            <div class="form-group">
+              <label>No HP Opsional</label>
+              <input class="input" name="phone" value="${item.phone}" placeholder="6289512345678">
+            </div>
+            <div class="form-group full">
+              <button class="btn btn-primary" type="submit">Simpan</button>
+            </div>
+          </div>
+        </form>
+      `);
+    }
+
+    function saveKader(e, id) {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const old = kaders.find(k => k.id === id);
+      const data = {
+        id: id || Date.now(),
+        name: f.get("name"),
+        posyandu: f.get("posyandu"),
+        address: f.get("address"),
+        phone: f.get("phone"),
+        rw: f.get("rw"),
+        status: old?.status || "Hadir"
+      };
+
+      if (id) kaders = kaders.map(k => k.id === id ? data : k);
+      else kaders.unshift(data);
+
+      closeModal();
+      renderKaders();
+    }
+
+    function deleteKader(id) {
+      if (confirm("Hapus data kader ini?")) {
+        kaders = kaders.filter(k => k.id !== id);
+        renderKaders();
+      }
+    }
+
+    function renderInfoSearch() {
+      const type = document.getElementById("infoType").value;
+      const q = document.getElementById("infoKeyword").value.toLowerCase();
+      const rw = document.getElementById("infoRw").value;
+
+      const source = type === "anak" ? children : pregnantMothers;
+      const data = source.filter(item => {
+        const matchQ = !q || item.name.toLowerCase().includes(q) || item.nik.includes(q);
+        const matchRw = !rw || item.rw === rw;
+        return matchQ && matchRw;
+      });
+
+      if (!data.length) {
+        document.getElementById("infoResult").innerHTML = `<div class="empty">Data tidak ditemukan. Coba ubah kata kunci atau filter RW.</div>`;
+        return;
+      }
+
+      document.getElementById("infoResult").innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>NIK</th>
+                <th>RW</th>
+                <th>Posyandu</th>
+                <th>${type === "anak" ? "Status Gizi" : "Usia Kehamilan"}</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map((item, index) => `
+                <tr>
+                  <td><strong>${item.name}</strong></td>
+                  <td>${item.nik}</td>
+                  <td>${item.rw}</td>
+                  <td>${item.posyandu}</td>
+                  <td>${type === "anak" ? `<span class="badge ${badgeClass(item.status)}">${item.status}</span>` : item.gestation}</td>
+                  <td><button class="btn btn-soft" onclick="showInfoDetail('${type}', '${item.nik}')">Detail</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function showInfoDetail(type, nik) {
+      const item = (type === "anak" ? children : pregnantMothers).find(x => x.nik === nik);
+      openModal("Detail Informasi", `
+        <div class="list">
+          <div class="list-item"><strong>Nama</strong><span>${item.name}</span></div>
+          <div class="list-item"><strong>NIK</strong><span>${item.nik}</span></div>
+          <div class="list-item"><strong>RW</strong><span>${item.rw}</span></div>
+          <div class="list-item"><strong>Posyandu</strong><span>${item.posyandu}</span></div>
+          ${type === "anak" ? `
+            <div class="list-item"><strong>Status Gizi</strong><span class="badge ${badgeClass(item.status)}">${item.status}</span></div>
+            <div class="list-item"><strong>Catatan</strong><span>${item.note}</span></div>
+          ` : `
+            <div class="list-item"><strong>Usia Ibu</strong><span>${item.age}</span></div>
+            <div class="list-item"><strong>Usia Kehamilan</strong><span>${item.gestation}</span></div>
+            <div class="list-item"><strong>Catatan</strong><span>${item.note}</span></div>
+          `}
+        </div>
+      `);
+    }
+
+    function renderKms() {
+      const filter = document.getElementById("kmsFilter")?.value || "";
+      const data = children.filter(c => !filter || c.posyandu === filter);
+
+      const counts = {
+        "Gizi Baik": data.filter(c => c.status === "Gizi Baik").length,
+        "Gizi Kurang": data.filter(c => c.status === "Gizi Kurang").length,
+        "Gizi Buruk": data.filter(c => c.status === "Gizi Buruk").length,
+        "Gizi Lebih": data.filter(c => c.status === "Gizi Lebih").length
+      };
+
+      document.getElementById("giziBaik").textContent = counts["Gizi Baik"];
+      document.getElementById("giziKurang").textContent = counts["Gizi Kurang"];
+      document.getElementById("giziBuruk").textContent = counts["Gizi Buruk"];
+      document.getElementById("giziLebih").textContent = counts["Gizi Lebih"];
+
+      const labels = Object.keys(counts);
+      const values = Object.values(counts);
+      const colors = ["#10b981", "#f59e0b", "#ef4444", "#2563eb"];
+
+      if (doughnutChart) doughnutChart.destroy();
+      if (barChart) barChart.destroy();
+
+      const doughnutCtx = document.getElementById("doughnutChart");
+      const barCtx = document.getElementById("barChart");
+
+      doughnutChart = new Chart(doughnutCtx, {
+        type: "doughnut",
+        data: {
+          labels,
+          datasets: [{
+            data: values,
+            backgroundColor: colors,
+            borderWidth: 4,
+            borderColor: "#ffffff"
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } },
+          cutout: "62%"
+        }
+      });
+
+      barChart = new Chart(barCtx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Jumlah Anak",
+            data: values,
+            backgroundColor: colors,
+            borderRadius: 14
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { precision: 0 } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+
+      const risks = data.filter(c => c.status === "Gizi Kurang" || c.status === "Gizi Buruk");
+      document.getElementById("riskChildren").innerHTML = risks.length ? risks.map(c => `
+        <tr>
+          <td><strong>${c.name}</strong></td>
+          <td>${c.nik}</td>
+          <td>${c.rw}</td>
+          <td>${c.posyandu}</td>
+          <td><span class="badge ${badgeClass(c.status)}">${c.status}</span></td>
+          <td>${c.note}</td>
+        </tr>
+      `).join("") : `<tr><td colspan="6"><div class="empty">Tidak ada anak dengan gizi kurang/buruk pada filter ini.</div></td></tr>`;
+    }
+
+    function renderArticles() {
+      const q = document.getElementById("searchArticle")?.value.toLowerCase() || "";
+      const cat = document.getElementById("filterArticleCategory")?.value || "";
+
+      const data = articles.filter(a => {
+        const matchQ = !q || a.title.toLowerCase().includes(q) || a.content.toLowerCase().includes(q);
+        const matchCat = !cat || a.category === cat;
+        return matchQ && matchCat;
+      });
+
+      document.getElementById("articleTable").innerHTML = data.length ? data.map(a => `
+        <tr>
+          <td><strong>${a.title}</strong></td>
+          <td><span class="badge ${badgeClass(a.category)}">${a.category}</span></td>
+          <td>${a.content.slice(0, 96)}${a.content.length > 96 ? "..." : ""}</td>
+          <td>${a.image}</td>
+          <td>
+            <button class="btn btn-soft btn-icon" onclick="openArticleModal(${a.id})">✏️</button>
+            <button class="btn btn-danger btn-icon" onclick="deleteArticle(${a.id})">🗑️</button>
+          </td>
+        </tr>
+      `).join("") : `<tr><td colspan="5"><div class="empty">Artikel tidak ditemukan.</div></td></tr>`;
+    }
+
+    function openArticleModal(id = null) {
+      const item = articles.find(a => a.id === id) || { title: "", category: "Gizi Anak", content: "", image: "Tidak Ada" };
+      openModal(id ? "✏️ Edit Artikel" : "➕ Tambah Artikel", `
+        <form onsubmit="saveArticle(event, ${id || "null"})">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Judul Artikel</label>
+              <input class="input" name="title" value="${item.title}" required>
+            </div>
+            <div class="form-group">
+              <label>Kategori</label>
+              <select class="select" name="category">
+                ${["Gizi Anak","Ibu Hamil","Imunisasi"].map(c => `<option ${c === item.category ? "selected" : ""}>${c}</option>`).join("")}
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Upload Gambar Opsional (max 2MB)</label>
+              <input class="input" type="file" name="image" accept="image/*">
+            </div>
+            <div class="form-group full">
+              <label>Isi Artikel</label>
+              <textarea class="textarea" name="content" required>${item.content}</textarea>
+            </div>
+            <div class="form-group full">
+              <button class="btn btn-primary" type="submit">${id ? "Update" : "Simpan"}</button>
+            </div>
+          </div>
+        </form>
+      `);
+    }
+
+    function saveArticle(e, id) {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const file = e.target.image.files[0];
+      if (file && file.size > 2 * 1024 * 1024) {
+        alert("Ukuran gambar maksimal 2MB.");
+        return;
+      }
+
+      const old = articles.find(a => a.id === id);
+      const data = {
+        id: id || Date.now(),
+        title: f.get("title"),
+        category: f.get("category"),
+        content: f.get("content"),
+        image: file ? "Ada" : (old?.image || "Tidak Ada")
+      };
+
+      if (id) articles = articles.map(a => a.id === id ? data : a);
+      else articles.unshift(data);
+
+      closeModal();
+      renderArticles();
+    }
+
+    function deleteArticle(id) {
+      if (confirm("Hapus artikel ini?")) {
+        articles = articles.filter(a => a.id !== id);
+        renderArticles();
+      }
+    }
+
+    function openModal(title, body) {
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalBody").innerHTML = body;
+      document.getElementById("modalBackdrop").classList.add("active");
+    }
+
+    function closeModal() {
+      document.getElementById("modalBackdrop").classList.remove("active");
+      document.getElementById("modalBody").innerHTML = "";
+    }
+
+    document.getElementById("modalBackdrop").addEventListener("click", (e) => {
+      if (e.target.id === "modalBackdrop") closeModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    window.addEventListener("popstate", () => {
+      const path = location.pathname;
+      const page = Object.keys(pageMeta).find(key => pageMeta[key][2] === path) || "dashboard";
+      goPage(page);
+    });
+
+    function init() {
+      renderDashboard();
+      renderSchedules();
+      renderKaders();
+      renderInfoSearch();
+      renderArticles();
+
+      const path = location.pathname;
+      const page = Object.keys(pageMeta).find(key => pageMeta[key][2] === path || (path === "/admin" && key === "dashboard")) || "dashboard";
+      goPage(page);
+    }
+
+    init();
+  </script>
+</body>
+</html>

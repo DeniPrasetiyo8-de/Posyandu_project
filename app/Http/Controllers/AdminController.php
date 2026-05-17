@@ -10,6 +10,7 @@ use App\Models\HealthRecord;
 use App\Models\Posyandu;
 use App\Models\Mother;
 use App\Models\Kader;
+use App\Models\Article;
 
 class AdminController extends Controller
 {
@@ -257,9 +258,97 @@ class AdminController extends Controller
         return redirect()->route('admin.kader')->with('success', 'Status kehadiran berhasil diperbarui!');
     }
     
-    public function kaderDestroy(Kader $kader)
+public function kaderDestroy(Kader $kader)
     {
         $kader->delete();
         return redirect()->route('admin.kader')->with('success', 'Kader berhasil dihapus!');
+    }
+    
+    // ========== ARTICLE CRUD ==========
+    public function artikel(Request $request)
+    {
+        $search = $request->search;
+        $kategori = $request->kategori;
+        
+        $query = Article::query();
+        
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('isi', 'like', "%{$search}%");
+            });
+        }
+        
+        if ($kategori) {
+            $query->where('kategori', $kategori);
+        }
+        
+        $artikels = $query->latest()->paginate(10);
+        $kategoriOptions = Article::getKategoriOptions();
+        
+        return view('admin.artikel', compact('artikels', 'kategoriOptions', 'search', 'kategori'));
+    }
+    
+    public function artikelStore(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'kategori' => 'required|in:gizi_anak,ibu_hamil,imunisasi',
+            'isi' => 'required|string',
+            'gambar' => 'nullable|image|max:2048',
+        ]);
+        
+        $gambar = null;
+        if ($request->hasFile('gambar')) {
+            $gambar = $request->file('gambar')->store('articles', 'public');
+        }
+        
+        Article::create([
+            'judul' => $request->judul,
+            'kategori' => $request->kategori,
+            'isi' => $request->isi,
+            'gambar' => $gambar,
+        ]);
+        
+        return redirect()->route('admin.artikel')->with('success', 'Artikel berhasil ditambahkan!');
+    }
+    
+    public function artikelUpdate(Request $request, Article $article)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'kategori' => 'required|in:gizi_anak,ibu_hamil,imunisasi',
+            'isi' => 'required|string',
+            'gambar' => 'nullable|image|max:2048',
+        ]);
+        
+        $gambar = $article->gambar;
+        if ($request->hasFile('gambar')) {
+            // Delete old image if exists
+            if ($article->gambar) {
+                \Storage::disk('public')->delete($article->gambar);
+            }
+            $gambar = $request->file('gambar')->store('articles', 'public');
+        }
+        
+        $article->update([
+            'judul' => $request->judul,
+            'kategori' => $request->kategori,
+            'isi' => $request->isi,
+            'gambar' => $gambar,
+        ]);
+        
+        return redirect()->route('admin.artikel')->with('success', 'Artikel berhasil diperbarui!');
+    }
+    
+    public function artikelDestroy(Article $article)
+    {
+        // Delete image if exists
+        if ($article->gambar) {
+            \Storage::disk('public')->delete($article->gambar);
+        }
+        
+        $article->delete();
+        return redirect()->route('admin.artikel')->with('success', 'Artikel berhasil dihapus!');
     }
 }

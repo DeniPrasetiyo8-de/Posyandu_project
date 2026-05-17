@@ -85,10 +85,73 @@ class AuthController extends Controller
 
 
 
-    public function logout()
+public function logout()
     {
         Auth::logout();
         return redirect('/')->with('success', 'Logout berhasil!');
+    }
+
+    public function showForgotPassword()
+    {
+        return view('pages.forgot-password');
+    }
+
+    public function processForgotPassword(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'rw' => ['required', Rule::in(['1', '2', '3', '4', '5', '6'])],
+        ]);
+
+        // Find user by name, phone, and RW
+        $user = User::where('name', $request->name)
+                    ->where('phone', $request->phone)
+                    ->where('rw', $request->rw)
+                    ->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'name' => 'Data yang Anda masukkan tidak cocok dengan data utilisateur.',
+            ])->onlyInput('name', 'phone', 'rw');
+        }
+
+        // Store user ID in session for password reset
+        session(['reset_password_user_id' => $user->id]);
+
+        return redirect('/reset-password')->with('success', 'Identitas terverifikasi! Silakan masukkan password baru.');
+    }
+
+    public function showResetPassword()
+    {
+        if (!session()->has('reset_password_user_id')) {
+            return redirect('/forgot-password')->with('error', 'Silakan verifikasi identitas terlebih dahulu.');
+        }
+
+        return view('pages.reset-password');
+    }
+
+    public function processResetPassword(Request $request)
+    {
+        if (!session()->has('reset_password_user_id')) {
+            return redirect('/forgot-password')->with('error', 'Silakan verifikasi identitas terlebih dahulu.');
+        }
+
+        $request->validate([
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $userId = session()->get('reset_password_user_id');
+        $user = User::find($userId);
+
+        if ($user) {
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
+
+        session()->forget('reset_password_user_id');
+
+        return redirect('/login')->with('success', 'Password berhasil diubah! Silakan login dengan password baru.');
     }
 }
 

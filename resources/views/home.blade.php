@@ -160,7 +160,7 @@
                     <i class="fas fa-leaf text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-green-600 transition-colors">Posyandu Dahlia</h3>
-                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Bintang No. 12, Kel. Kejora, Kec. Utara</p>
+                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Dahlia No. 12, Kel. Kejora, Kec. Utara</p>
                 <div class="flex items-center justify-center space-x-4 mb-6 text-sm">
                     <span class="flex items-center text-green-600">
                         <i class="fas fa-clock mr-1"></i> Setiap Senin 09.00
@@ -175,12 +175,12 @@
             </div>
 
 <!-- Posyandu 5 -->
-            <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-yellow-100 hover:border-yellow-200">
-                <div class="w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+            <div class="group bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 border border-pink-100 hover:border-pink-200">
+                <div class="w-20 h-20 bg-gradient-to-r from-pink-400 to-pink-400 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg group-hover:scale-110 transition-transform">
                     <i class="fas fa-sun-plant-wilt text-white text-2xl"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-yellow-600 transition-colors">Posyandu Sakura</h3>
-                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Matahari No. 56, Kel. Cerah, Kec. Selatan</p>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-pink-600 transition-colors">Posyandu Sakura</h3>
+                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Sakura No. 56, Kel. Cerah, Kec. Selatan</p>
                 <div class="flex items-center justify-center space-x-4 mb-6 text-sm">
                     <span class="flex items-center text-green-600">
                         <i class="fas fa-clock mr-1"></i> Setiap Jumat 08.00
@@ -189,7 +189,7 @@
                         <i class="fas fa-users mr-1"></i> 55 Anak
                     </span>
                 </div>
-                <a href="https://www.google.com/maps/search/?api=" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 px-6 rounded-2xl font-bold text-center block hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                <a href="https://www.google.com/maps/search/?api=" class="w-full bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 px-6 rounded-2xl font-bold text-center block hover:from-yellow-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                     <i class="fas fa-directions mr-2"></i>Lihat Lokasi
                 </a>
             </div>
@@ -200,7 +200,7 @@
                     <i class="fas fa-dove text-white text-2xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center group-hover:text-indigo-600 transition-colors">Posyandu Teratai</h3>
-                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Bulan No. 89, Kel. Purnama Kec. Tengah</p>
+                <p class="text-gray-600 mb-6 text-center leading-relaxed">Jl. Teratai No. 89, Kel. Purnama Kec. Tengah</p>
                 <div class="flex items-center justify-center space-x-4 mb-6 text-sm">
                     <span class="flex items-center text-green-600">
                         <i class="fas fa-clock mr-1"></i> Setiap Sabtu 09.30

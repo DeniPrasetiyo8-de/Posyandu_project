@@ -91,10 +91,17 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center">
+<button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center">
                         <i class="fas fa-sign-in-alt mr-2"></i>
                         Masuk Orang Tua
                     </button>
+
+                    <div class="text-center mt-4">
+                        <a href="{{ url('/forgot-password') }}" class="text-sm text-blue-500 hover:text-blue-600">
+                            <i class="fas fa-question-circle mr-1"></i>
+                            Lupa Password?
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

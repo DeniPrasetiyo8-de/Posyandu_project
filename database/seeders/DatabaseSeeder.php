@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PosyanduSeeder::class,
+            ArticleSeeder::class,
         ]);
 
         // Buat admin user fixed

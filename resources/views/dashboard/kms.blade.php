@@ -62,7 +62,7 @@
         {{-- Mother Selector --}}
         <div id="motherSelectorSection" class="bg-slate-800/70 backdrop-blur-sm rounded-3xl p-8 border border-slate-700 mb-8" style="display: none;">
             <label class="block text-white font-bold text-xl mb-4">Pilih Ibu</label>
-            <select id="motherSelect" class="w-full md:w-96 p-4 rounded-2xl bg-slate-700/50 border-2 border-slate-600 text-white text-lg focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20 transition-all">
+            <select id="motherSelect" class="w-full md:w-96 p-4 rounded-2xl bg-slate-700/50 border-2 border-slate-600 text-black text-lg focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20 transition-all">
                 @forelse($mothers as $mother)
                     <option value="{{ $mother->id }}" 
                             data-nama="{{ $mother->nama }}"

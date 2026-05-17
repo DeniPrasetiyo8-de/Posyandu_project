@@ -116,8 +116,13 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+<!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
+        <a href="/admin/artikel" class="group bg-gray-900 p-8 rounded-3xl border border-gray-700 hover:border-gray-600 transition-all transform hover:-translate-y-2 block text-center">
+            <i class="fas fa-newspaper text-4xl mb-4 block mx-auto group-hover:rotate-12 transition-transform text-orange-400"></i>
+            <h3 class="text-2xl font-bold mb-2 text-white">Kelola Artikel</h3>
+            <p class="opacity-90 text-gray-300">Tambah/Edit artikel</p>
+        </a>
         <a href="/admin/jadwal" class="group bg-gray-900 p-8 rounded-3xl border border-gray-700 hover:border-gray-600 transition-all transform hover:-translate-y-2 block text-center">
             <i class="fas fa-calendar-plus text-4xl mb-4 block mx-auto group-hover:rotate-12 transition-transform text-blue-400"></i>
             <h3 class="text-2xl font-bold mb-2 text-white">Kelola Jadwal</h3>

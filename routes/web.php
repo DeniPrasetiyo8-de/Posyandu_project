@@ -17,6 +17,10 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword']);
+Route::post('/forgot-password', [AuthController::class, 'processForgotPassword']);
+Route::get('/reset-password', [AuthController::class, 'showResetPassword']);
+Route::post('/reset-password', [AuthController::class, 'processResetPassword']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
@@ -46,11 +50,17 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/informasi/anak', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi.anak');
     Route::get('/informasi/ibu', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi.ibu');
     Route::get('/kms', [App\Http\Controllers\AdminController::class, 'kmsAnalytics'])->name('kms');
-Route::get('/kader', [App\Http\Controllers\AdminController::class, 'kader'])->name('kader');
+    Route::get('/kader', [App\Http\Controllers\AdminController::class, 'kader'])->name('kader');
     Route::post('/kader', [App\Http\Controllers\AdminController::class, 'kaderStore'])->name('kader.store');
     Route::put('/kader/{kader}', [App\Http\Controllers\AdminController::class, 'kaderUpdate'])->name('kader.update');
     Route::patch('/kader/{kader}/status', [App\Http\Controllers\AdminController::class, 'kaderUpdateStatus'])->name('kader.updateStatus');
     Route::delete('/kader/{kader}', [App\Http\Controllers\AdminController::class, 'kaderDestroy'])->name('kader.destroy');
+    
+// Article Management Routes
+    Route::get('/artikel', [App\Http\Controllers\AdminController::class, 'artikel'])->name('artikel');
+    Route::post('/artikel', [App\Http\Controllers\AdminController::class, 'artikelStore'])->name('artikel.store');
+    Route::put('/artikel/{article}', [App\Http\Controllers\AdminController::class, 'artikelUpdate'])->name('artikel.update');
+    Route::delete('/artikel/{article}', [App\Http\Controllers\AdminController::class, 'artikelDestroy'])->name('artikel.destroy');
 });
 
 Route::middleware('auth')->group(function () {

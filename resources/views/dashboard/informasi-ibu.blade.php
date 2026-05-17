@@ -29,25 +29,6 @@
         </div>
     </div>
 
-    <!-- Jadwal Layanan -->
-    <div class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 rounded-3xl p-10 border border-pink-200 hover:shadow-2xl transition-all">
-        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Jadwal Pemberian Layanan</h3>
-        <div class="grid md:grid-cols-3 gap-6 text-center">
-            <div>
-                <div class="text-3xl font-bold text-pink-500 mb-2">0-11 Bulan</div>
-                <p class="text-gray-600">Vitamin A, Imunisasi DPT-HB-HiB</p>
-            </div>
-            <div>
-                <div class="text-3xl font-bold text-purple-500 mb-2">12-23 Bulan</div>
-                <p class="text-gray-600">Imunisasi Campak, Vitamin A</p>
-            </div>
-            <div>
-                <div class="text-3xl font-bold text-blue-500 mb-2">24+ Bulan</div>
-                <p class="text-gray-600">Pemeriksaan Gizi, Imunisasi Booster</p>
-            </div>
-        </div>
-    </div>
-
 <!-- Quick Links -->
     <div class="grid md:grid-cols-4 gap-6 pt-8 border-t border-gray-200">
         <a href="{{ route('dashboard.index') }}" class="group p-8 bg-white rounded-2xl border border-gray-200 hover:border-blue-500 hover:shadow-xl transition-all text-center">
