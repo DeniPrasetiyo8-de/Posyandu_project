@@ -1,15 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Kelola Kader - Admin')
+@section('page_title', 'Kelola Kader')
+@section('page_description', 'CRUD kader dan status kehadiran.')
 
-@section('content')
-<div class="p-8">
+@section('admin_content')
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 class="text-4xl font-bold text-black mb-2">Kelola Kader</h1>
-            <p class="text-gray-600">Kelola data kader dan status kehadiran</p>
-        </div>
         <a href="{{ route('admin.dashboard') }}" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-bold">
             <i class="fas fa-arrow-left mr-2"></i>Kembali
         </a>
@@ -57,7 +54,7 @@
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
-<tr class="text-left text-gray-600 border-b border-gray-300">
+<tr class="text-left text-black border-b border-gray-300">
                         <th class="pb-4 font-bold">#</th>
                         <th class="pb-4 font-bold">Nama Kader</th>
                         <th class="pb-4 font-bold">Posyandu</th>
@@ -71,16 +68,16 @@
                 <tbody>
                     @forelse($kaders as $index => $kader)
                         <tr class="border-b border-gray-200 hover:bg-gray-50">
-                            <td class="py-4 text-gray-600">{{ $index + 1 }}</td>
+<td class="py-4 text-black">{{ $index + 1 }}</td>
                             <td class="py-4">
                                 <span class="text-black font-bold">{{ $kader->nama_kader }}</span>
                             </td>
 <td class="py-4">
                                 <span class="text-black">{{ $kader->posyandu->nama_posyandu }}</span>
                             </td>
-                            <td class="py-4 text-gray-600">{{ $kader->no_hp ?? '-' }}</td>
-                            <td class="py-4 text-gray-600">{{ $kader->alamat ?? '-' }}</td>
-                            <td class="py-4 text-gray-600">{{ $kader->rw ?? '-' }}</td>
+                            <td class="py-4 text-black">{{ $kader->no_hp ?? '-' }}</td>
+                            <td class="py-4 text-black">{{ $kader->alamat ?? '-' }}</td>
+                            <td class="py-4 text-black">{{ $kader->rw ?? '-' }}</td>
                             <td class="py-4">
                                 {{-- Form Status Kehadiran --}}
                                 <form id="statusForm{{ $kader->id }}" 
@@ -120,7 +117,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-8 text-center text-gray-500">
+<td colspan="7" class="py-8 text-center text-black">
                                 <i class="fas fa-user-md text-4xl mb-4 block"></i>
                                 <p>Belum ada data kader</p>
                             </td>

@@ -12,7 +12,8 @@ class Child extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function posyandu(){
+    public function posyandu()
+    {
         return $this->belongsTo(Posyandu::class);
     }
 
@@ -53,7 +54,19 @@ class Child extends Model
         'jenis_kelamin',
         'berat_badan',
         'tinggi_badan',
-        'foto'
+        'foto',
+        'imunisasi_hb0',
+        'imunisasi_bcg',
+        'imunisasi_polio1',
+        'imunisasi_polio2',
+        'imunisasi_polio3',
+        'imunisasi_polio4',
+        'imunisasi_dpt_hb_hib1',
+        'imunisasi_dpt_hb_hib2',
+        'imunisasi_dpt_hb_hib3',
+        'imunisasi_campak',
+        'vitamin_a_6_11',
+        'vitamin_a_12_59',
     ];
 
     protected $casts = [

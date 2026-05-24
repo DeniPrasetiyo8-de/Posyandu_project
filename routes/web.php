@@ -47,8 +47,14 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('/jadwal/{schedule}', [App\Http\Controllers\AdminController::class, 'jadwalUpdate'])->name('jadwal.update');
     Route::delete('/jadwal/{schedule}', [App\Http\Controllers\AdminController::class, 'jadwalDestroy'])->name('jadwal.destroy');
     Route::get('/informasi', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi');
-    Route::get('/informasi/anak', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi.anak');
+Route::get('/informasi/anak', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi.anak');
     Route::get('/informasi/ibu', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi.ibu');
+    Route::get('/informasi/edit/anak/{child}', [App\Http\Controllers\AdminController::class, 'informasiEditAnak'])->name('informasi.edit.anak');
+    Route::get('/informasi/edit/ibu/{mother}', [App\Http\Controllers\AdminController::class, 'informasiEditIbu'])->name('informasi.edit.ibu');
+    Route::post('/informasi/update-imunisasi', [App\Http\Controllers\AdminController::class, 'updateImunisasiAdmin'])->name('informasi.update.imunisasi');
+    Route::post('/informasi/update-vitamin', [App\Http\Controllers\AdminController::class, 'updateVitaminAdmin'])->name('informasi.update.vitamin');
+    Route::post('/informasi/update-tt', [App\Http\Controllers\AdminController::class, 'updateTTAdmin'])->name('informasi.update.tt');
+    Route::post('/informasi/update-trimester', [App\Http\Controllers\AdminController::class, 'updateTrimesterAdmin'])->name('informasi.update.trimester');
     Route::get('/kms', [App\Http\Controllers\AdminController::class, 'kmsAnalytics'])->name('kms');
     Route::get('/kader', [App\Http\Controllers\AdminController::class, 'kader'])->name('kader');
     Route::post('/kader', [App\Http\Controllers\AdminController::class, 'kaderStore'])->name('kader.store');

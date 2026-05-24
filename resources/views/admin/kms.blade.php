@@ -1,15 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'KMS Analytics - Admin')
+@section('page_title', 'KMS Analytics')
+@section('page_description', 'Analisis status gizi anak.')
 
-@section('content')
-<div class="p-8">
+@section('admin_content')
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 class="text-4xl font-bold text-white mb-2">KMS Analytics</h1>
-            <p class="text-gray-300">Analisis status gizi anak berdasarkan data KMS</p>
-        </div>
         <a href="{{ route('admin.dashboard') }}" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-bold">
             <i class="fas fa-arrow-left mr-2"></i>Kembali
         </a>
@@ -39,7 +36,7 @@
                 </div>
             </div>
             <h3 class="text-3xl font-bold text-white">{{ $stats['total_anak'] }}</h3>
-            <p class="text-gray-300">Total Anak</p>
+<p class="text-black">Total Anak</p>
         </div>
 
         <div class="bg-gray-900 rounded-3xl p-6 border border-gray-700">
@@ -49,7 +46,7 @@
                 </div>
             </div>
             <h3 class="text-3xl font-bold text-white">{{ $stats['normal'] ?? 0 }}</h3>
-            <p class="text-gray-300">Status Gizi Baik</p>
+            <p class="text-black">Status Gizi Baik</p>
         </div>
 
         <div class="bg-gray-900 rounded-3xl p-6 border border-gray-700">
@@ -59,7 +56,7 @@
                 </div>
             </div>
             <h3 class="text-3xl font-bold text-white">{{ $stats['underweight'] ?? 0 }}</h3>
-            <p class="text-gray-300">Gizi Kurang</p>
+            <p class="text-black">Gizi Kurang</p>
         </div>
 
         <div class="bg-gray-900 rounded-3xl p-6 border border-gray-700">
@@ -69,7 +66,7 @@
                 </div>
             </div>
             <h3 class="text-3xl font-bold text-white">{{ $stats['stunting'] ?? 0 }}</h3>
-            <p class="text-gray-300">Stunting</p>
+            <p class="text-black">Stunting</p>
         </div>
     </div>
 
@@ -98,7 +95,7 @@
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
-                    <tr class="text-left text-gray-300 border-b border-gray-700">
+<tr class="text-left text-black border-b border-gray-700">
                         <th class="pb-4 font-bold">Nama</th>
                         <th class="pb-4 font-bold">Umur</th>
                         <th class="pb-4 font-bold">Berat</th>
@@ -117,11 +114,11 @@
                             <td class="py-4">
                                 <span class="text-white font-bold">{{ $child->nama }}</span>
                             </td>
-                            <td class="py-4 text-gray-300">{{ $child->umur_bulan ?? 0 }} bulan</td>
-                            <td class="py-4 text-gray-300">
+<td class="py-4 text-black">{{ $child->umur_bulan ?? 0 }} bulan</td>
+                            <td class="py-4 text-black">
                                 {{ $child->healthRecords->first()->berat_badan ?? '-' }} kg
                             </td>
-                            <td class="py-4 text-gray-300">
+                            <td class="py-4 text-black">
                                 {{ $child->posyandu->nama_posyandu ?? 'N/A' }}
                             </td>
                             <td class="py-4">
@@ -132,7 +129,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-8 text-center text-gray-400">
+<td colspan="5" class="py-8 text-center text-black">
                                 <i class="fas fa-check-circle text-4xl mb-4 text-green-400"></i>
                                 <p>Semua anak memiliki status gizi baik</p>
                             </td>

@@ -1,15 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Kelola Artikel - Admin')
+@section('page_title', 'Kelola Artikel')
+@section('page_description', 'CRUD artikel kesehatan posyandu.')
 
-@section('content')
-<div class="p-8">
+@section('admin_content')
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 class="text-4xl font-bold text-white mb-2">Kelola Artikel</h1>
-            <p class="text-gray-300">Tambah, edit, atau hapus artikel kesehatan</p>
-        </div>
         <a href="{{ route('admin.dashboard') }}" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-bold">
             <i class="fas fa-arrow-left mr-2"></i>Kembali
         </a>
@@ -48,7 +45,7 @@
     <!-- Add Button & Table -->
     <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-6 border border-white/20">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-2xl font-bold text-white">Daftar Artikel</h3>
+<h3 class="text-2xl font-bold text-black">Daftar Artikel</h3>
             <button onclick="toggleModal('addModal')" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold">
                 <i class="fas fa-plus mr-2"></i>Tambah Artikel
             </button>
@@ -57,7 +54,7 @@
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
-                    <tr class="text-left text-gray-300 border-b border-gray-700">
+<tr class="text-left text-black border-b border-black-700">
                         <th class="pb-4 font-bold">#</th>
                         <th class="pb-4 font-bold">Judul</th>
                         <th class="pb-4 font-bold">Kategori</th>

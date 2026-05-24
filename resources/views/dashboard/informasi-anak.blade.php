@@ -117,57 +117,45 @@
                 </div>
             </div>
             
-            <!-- Daftar Imunisasi dan Vitamin untuk Setiap Anak -->
+<!-- Riwayat Pemeriksaan untuk Setiap Anak -->
             <div class="grid md:grid-cols-2 gap-6">
-                <!-- Daftar Imunisasi -->
+<!-- Riwayat Imunisasi -->
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">
-                        <i class="fas fa-syringe text-blue-500 mr-2"></i>Imunisasi - {{ $child->nama }}
+                        <i class="fas fa-syringe text-blue-500 mr-2"></i>Riwayat Imunisasi - {{ $child->nama }}
                     </h3>
                     <div class="space-y-3">
                         @foreach(\App\Models\Child::getDaftarImunisasi() as $key => $nama)
                         @php
-                            $imunisasiStatus = json_decode($child->imunisasi_status ?? '{}', true);
-                            $status = $imunisasiStatus[$key] ?? 'belum';
+                            // Use ENUM column directly from database
+                            $status = $child->$key ?? 'Belum';
                         @endphp
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <span class="font-medium text-gray-700 text-sm">{{ $nama }}</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer" 
-                                    {{ $status == 'sudah' ? 'checked' : '' }}
-                                    onchange="toggleStatus({{ $child->id }}, '{{ $key }}', this.checked, 'imunisasi')">
-                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
-                                <span class="ms-2 text-xs font-medium {{ $status == 'sudah' ? 'text-green-600' : 'text-red-500' }}">
-                                    {{ $status == 'sudah' ? 'Sudah' : 'Belum' }}
-                                </span>
-                            </label>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold {{ $status == 'Sudah' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500' }}">
+                                {{ $status }}
+                            </span>
                         </div>
                         @endforeach
                     </div>
                 </div>
 
-                <!-- Daftar Vitamin -->
+                <!-- Riwayat Vitamin -->
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-pink-100">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">
-                        <i class="fas fa-pills text-pink-500 mr-2"></i>Vitamin - {{ $child->nama }}
+                        <i class="fas fa-pills text-pink-500 mr-2"></i>Riwayat Vitamin - {{ $child->nama }}
                     </h3>
                     <div class="space-y-3">
                         @foreach(\App\Models\Child::getDaftarVitamin() as $key => $nama)
                         @php
-                            $vitaminStatus = json_decode($child->vitamin_status ?? '{}', true);
-                            $status = $vitaminStatus[$key] ?? 'belum';
+                            // Use ENUM column directly from database
+                            $status = $child->$key ?? 'Belum';
                         @endphp
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <span class="font-medium text-gray-700 text-sm">{{ $nama }}</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer" 
-                                    {{ $status == 'sudah' ? 'checked' : '' }}
-                                    onchange="toggleStatus({{ $child->id }}, '{{ $key }}', this.checked, 'vitamin')">
-                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-100 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
-                                <span class="ms-2 text-xs font-medium {{ $status == 'sudah' ? 'text-green-600' : 'text-red-500' }}">
-                                    {{ $status == 'sudah' ? 'Sudah' : 'Belum' }}
-                                </span>
-                            </label>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold {{ $status == 'Sudah' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500' }}">
+                                {{ $status }}
+                            </span>
                         </div>
                         @endforeach
                     </div>

@@ -9,7 +9,7 @@ class Mother extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+protected $fillable = [
         'user_id',
         'nik',
         'nama',
@@ -23,6 +23,11 @@ class Mother extends Model
         'trimester_status',
         'tt_status',
         'iron_status',
+        'tt1',
+        'tt2',
+        'tt3',
+        'tt4',
+        'tt5',
     ];
 
     protected $casts = [

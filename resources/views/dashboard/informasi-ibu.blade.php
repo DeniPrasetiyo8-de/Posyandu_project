@@ -53,92 +53,68 @@
         </a>
     </div>
 
-<!-- Perkembangan Kehamilan dan TT - Hanya tampil jika ada ibu -->
+<!-- Riwayat Perkembangan Kehamilan dan TT - Hanya tampil jika ada ibu (Read-only) -->
     @if(isset($mothers) && !$mothers->isEmpty())
     @foreach($mothers as $mother)
-    <div class="grid md:grid-cols-2 gap-6 pt-8 border-t border-gray-200">
-        <!-- Perkembangan Kehamilan -->
+    <div class="grid md:grid-cols-2 gap-6 pt-8 border-t border-black-200">
+        <!-- Riwayat Perkembangan Kehamilan -->
         <div class="bg-white p-6 rounded-2xl shadow-lg border border-pink-100">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">
-                <i class="fas fa-baby-carriage text-pink-500 mr-2"></i>Perkembangan Kehamilan
+            <h3 class="text-lg font-bold text-black-800 mb-4">
+                <i class="fas fa-baby-carriage text-black-500 mr-2"></i>Riwayat Perkembangan Kehamilan
             </h3>
             <div class="space-y-4">
                 @php
                     $trimesterStatus = json_decode($mother->trimester_status ?? '{}', true);
-                    $status1 = $trimesterStatus['trimester1'] ?? 'belum';
-                    $status2 = $trimesterStatus['trimester2'] ?? 'belum';
-                    $status3 = $trimesterStatus['trimester3'] ?? 'belum';
+                    $status1 = $trimesterStatus['trimester1'] ?? 'Belum';
+                    $status2 = $trimesterStatus['trimester2'] ?? 'Belum';
+                    $status3 = $trimesterStatus['trimester3'] ?? 'Belum';
                 @endphp
                 <div class="border-l-4 border-pink-500 pl-4">
                     <p class="text-sm text-gray-500">Trimester 1 (0-12 minggu)</p>
                     <p class="font-medium">Pemeriksaan awal, konsumsi asam folat</p>
-                    <div class="flex items-center justify-between mt-2">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" 
-                                {{ $status1 == 'selesai' ? 'checked' : '' }}
-                                onchange="toggleTrimester({{ $mother->id }}, 'trimester1', this.checked)">
-                            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-100 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
-                        </label>
-                        <span class="text-xs font-bold {{ $status1 == 'selesai' ? 'text-green-600' : 'text-red-500' }}">
-                            {{ $status1 == 'selesai' ? 'Selesai' : 'Belum' }}
+                    <div class="mt-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold {{ $status1 == 'Selesai' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500' }}">
+                            {{ $status1 == 'Selesai' ? 'Selesai' : 'Belum' }}
                         </span>
                     </div>
                 </div>
                 <div class="border-l-4 border-pink-300 pl-4">
                     <p class="text-sm text-gray-500">Trimester 2 (13-24 minggu)</p>
                     <p class="font-medium">Pemeriksaan USG, pemantauan berat badan</p>
-                    <div class="flex items-center justify-between mt-2">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" 
-                                {{ $status2 == 'selesai' ? 'checked' : '' }}
-                                onchange="toggleTrimester({{ $mother->id }}, 'trimester2', this.checked)">
-                            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-100 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
-                        </label>
-                        <span class="text-xs font-bold {{ $status2 == 'selesai' ? 'text-green-600' : 'text-red-500' }}">
-                            {{ $status2 == 'selesai' ? 'Selesai' : 'Belum' }}
+                    <div class="mt-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold {{ $status2 == 'Selesai' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500' }}">
+                            {{ $status2 == 'Selesai' ? 'Selesai' : 'Belum' }}
                         </span>
                     </div>
                 </div>
                 <div class="border-l-4 border-gray-300 pl-4">
                     <p class="text-sm text-gray-500">Trimester 3 (25-36 minggu)</p>
                     <p class="font-medium">Persiapan persalinan, pemeriksaan rutin</p>
-                    <div class="flex items-center justify-between mt-2">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" 
-                                {{ $status3 == 'selesai' ? 'checked' : '' }}
-                                onchange="toggleTrimester({{ $mother->id }}, 'trimester3', this.checked)">
-                            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-100 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
-                        </label>
-                        <span class="text-xs font-bold {{ $status3 == 'selesai' ? 'text-green-600' : 'text-red-500' }}">
-                            {{ $status3 == 'selesai' ? 'Selesai' : 'Belum' }}
+                    <div class="mt-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold {{ $status3 == 'Selesai' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500' }}">
+                            {{ $status3 == 'Selesai' ? 'Selesai' : 'Belum' }}
                         </span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tablet Tambah Darah (TT) -->
+<!-- Riwayat Tablet Tambah Darah (TT) -->
         <div class="bg-white p-6 rounded-2xl shadow-lg border border-red-100">
             <h3 class="text-lg font-bold text-gray-800 mb-4">
-                <i class="fas fa-tint text-red-500 mr-2"></i>Tablet Tambah Darah (TT)
+                <i class="fas fa-tint text-red-500 mr-2"></i>Riwayat Tablet Tambah Darah (TT)
             </h3>
             <div class="space-y-3">
                 @foreach(\App\Models\Mother::getDaftarTT() as $key => $nama)
                 @php
-                    $ttStatus = json_decode($mother->tt_status ?? '{}', true);
-                    $status = $ttStatus[$key] ?? 'belum';
+                    // Read from individual columns (tt1, tt2, tt3, tt4, tt5)
+                    $status = $mother->$key ?? 'Belum';
                 @endphp
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span class="font-medium text-gray-700 text-sm">{{ $nama }}</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer" 
-                            {{ $status == 'sudah' ? 'checked' : '' }}
-                            onchange="toggleTT({{ $mother->id }}, '{{ $key }}', this.checked)">
-                        <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-100 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
-                        <span class="ms-2 text-xs font-medium {{ $status == 'sudah' ? 'text-green-600' : 'text-red-500' }}">
-                            {{ $status == 'sudah' ? 'Sudah' : 'Belum' }}
-                        </span>
-                    </label>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold {{ $status == 'Sudah' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500' }}">
+                        {{ $status == 'Sudah' ? 'Sudah' : 'Belum' }}
+                    </span>
                 </div>
                 @endforeach
             </div>
@@ -146,54 +122,6 @@
     </div>
     @endforeach
     @endif
-
-<script>
-    function toggleTT(motherId, suntikan, isChecked) {
-        const status = isChecked ? 'sudah' : 'belum';
-        
-        fetch('{{ route("dashboard.update.tt") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                mother_id: motherId,
-                suntikan_tt: suntikan,
-                status: status
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            }
-        });
-    }
-    
-    function toggleTrimester(motherId, trimester, isChecked) {
-        const status = isChecked ? 'selesai' : 'belum';
-        
-        fetch('{{ route("dashboard.update.trimester") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                mother_id: motherId,
-                trimester: trimester,
-                status: status
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            }
-        });
-    }
-    </script>
 
     <!-- Data Ibu Section -->
     <div class="mt-12">

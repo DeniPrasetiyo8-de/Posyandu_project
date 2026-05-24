@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <a href="#" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold text-center transition-all flex items-center justify-center text-sm">
+                        <a href="/whatsapp-generator" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold text-center transition-all flex items-center justify-center text-sm">
                             <i class="fas fa-phone mr-1"></i>Hubungi
                         </a>
                         <a href="{{ route('dashboard.index') }}" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold text-center transition-all flex items-center justify-center text-sm">

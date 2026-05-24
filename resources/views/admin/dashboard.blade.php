@@ -1,16 +1,18 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('content')
-<div class="p-8">
+@section('title', 'Dashboard Admin - Admin')
+@section('page_title', 'Dashboard Admin')
+@section('page_description', 'Selamat datang, ' . Auth::user()->name)
+
+@section('admin_content')
     <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 class="text-4xl font-bold text-Black mb-2">Dashboard Admin</h1>
-            <p class="text-Black-300">Selamat datang, {{ Auth::user()->name }}</p>
-        </div>
         <div class="text-right">
-            <span class="inline-flex items-center px-4 py-2 rounded-full bg-yellow-500/20 text-yellow-200 font-bold">
-                <i class="fas fa-crown mr-2"></i> ADMIN MODE
-            </span>
+            <form action="{{ route('logout') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="inline-flex items-center px-6 py-3 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold transition-all transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-sign-out-alt mr-2"></i> KELUAR
+                </button>
+            </form>
         </div>
     </div>
 
@@ -138,6 +140,5 @@
             <h3 class="text-2xl font-bold mb-2 text-white">Cari Anak/Ibu</h3>
             <p class="opacity-90 text-gray-300">Data anak & ibu lengkap</p>
         </a>
-    </div>
 </div>
 @endsection
