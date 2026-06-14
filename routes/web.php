@@ -51,10 +51,13 @@ Route::get('/informasi/anak', [App\Http\Controllers\AdminController::class, 'inf
     Route::get('/informasi/ibu', [App\Http\Controllers\AdminController::class, 'informasi'])->name('informasi.ibu');
     Route::get('/informasi/edit/anak/{child}', [App\Http\Controllers\AdminController::class, 'informasiEditAnak'])->name('informasi.edit.anak');
     Route::get('/informasi/edit/ibu/{mother}', [App\Http\Controllers\AdminController::class, 'informasiEditIbu'])->name('informasi.edit.ibu');
+Route::post('/informasi/update-status', [App\Http\Controllers\AdminController::class, 'updateStatusAdmin'])->name('informasi.update.status');
     Route::post('/informasi/update-imunisasi', [App\Http\Controllers\AdminController::class, 'updateImunisasiAdmin'])->name('informasi.update.imunisasi');
     Route::post('/informasi/update-vitamin', [App\Http\Controllers\AdminController::class, 'updateVitaminAdmin'])->name('informasi.update.vitamin');
     Route::post('/informasi/update-tt', [App\Http\Controllers\AdminController::class, 'updateTTAdmin'])->name('informasi.update.tt');
     Route::post('/informasi/update-trimester', [App\Http\Controllers\AdminController::class, 'updateTrimesterAdmin'])->name('informasi.update.trimester');
+    Route::post('/informasi/update-status-child', [App\Http\Controllers\AdminController::class, 'updateStatusChild'])->name('informasi.update.status.child');
+    Route::post('/informasi/update-status-mother', [App\Http\Controllers\AdminController::class, 'updateStatusMother'])->name('informasi.update.status.mother');
     Route::get('/kms', [App\Http\Controllers\AdminController::class, 'kmsAnalytics'])->name('kms');
     Route::get('/kader', [App\Http\Controllers\AdminController::class, 'kader'])->name('kader');
     Route::post('/kader', [App\Http\Controllers\AdminController::class, 'kaderStore'])->name('kader.store');
@@ -67,6 +70,37 @@ Route::get('/informasi/anak', [App\Http\Controllers\AdminController::class, 'inf
     Route::post('/artikel', [App\Http\Controllers\AdminController::class, 'artikelStore'])->name('artikel.store');
     Route::put('/artikel/{article}', [App\Http\Controllers\AdminController::class, 'artikelUpdate'])->name('artikel.update');
     Route::delete('/artikel/{article}', [App\Http\Controllers\AdminController::class, 'artikelDestroy'])->name('artikel.destroy');
+    
+// KMS Ibu - Data kesehatan ibu hamil (BB, LILA, Tekanan Darah)
+    Route::get('/kms-ibu', [App\Http\Controllers\AdminController::class, 'kmsIbu'])->name('kms-ibu');
+    Route::get('/kms-ibu/get-data', [App\Http\Controllers\AdminController::class, 'kmsIbuGetData'])->name('kms-ibu.get-data');
+    Route::post('/kms-ibu/store', [App\Http\Controllers\AdminController::class, 'kmsIbuStore'])->name('kms-ibu.store');
+    Route::get('/kms-ibu/riwayat', [App\Http\Controllers\AdminController::class, 'kmsIbuGetRiwayat'])->name('kms-ibu.riwayat');
+    
+    // KMS Anak - Data kesehatan anak (BB, TB, Status Gizi, Stunting)
+    Route::get('/kms-anak', [App\Http\Controllers\AdminController::class, 'kmsAnak'])->name('kms-anak');
+    Route::get('/kms-anak/get-data', [App\Http\Controllers\AdminController::class, 'kmsAnakGetData'])->name('kms-anak.get-data');
+    Route::post('/kms-anak/store', [App\Http\Controllers\AdminController::class, 'kmsAnakStore'])->name('kms-anak.store');
+    Route::put('/kms-anak/{record}', [App\Http\Controllers\AdminController::class, 'kmsAnakUpdate'])->name('kms-anak.update');
+    Route::delete('/kms-anak/{record}', [App\Http\Controllers\AdminController::class, 'kmsAnakDestroy'])->name('kms-anak.destroy');
+    Route::get('/kms-anak/riwayat', [App\Http\Controllers\AdminController::class, 'kmsAnakGetRiwayat'])->name('kms-anak.riwayat');
+    Route::get('/kms-anak/grafik', [App\Http\Controllers\AdminController::class, 'kmsAnakGrafik'])->name('kms-anak.grafik');
+    
+// Laporan Posyandu
+    Route::get('/laporan', [App\Http\Controllers\AdminController::class, 'laporan'])->name('laporan');
+    Route::get('/laporan/get-detail', [App\Http\Controllers\AdminController::class, 'laporanGetDetail'])->name('laporan.get-detail');
+    Route::post('/laporan/export', [App\Http\Controllers\AdminController::class, 'laporanExport'])->name('laporan.export');
+    Route::get('/laporan/anak', [App\Http\Controllers\AdminController::class, 'laporanAnak'])->name('laporan.anak');
+    Route::get('/laporan/ibu-hamil', [App\Http\Controllers\AdminController::class, 'laporanIbuHamil'])->name('laporan.ibu-hamil');
+    Route::get('/laporan/imunisasi', [App\Http\Controllers\AdminController::class, 'laporanImunisasi'])->name('laporan.imunisasi');
+    Route::get('/laporan/grafik', [App\Http\Controllers\AdminController::class, 'laporanGrafik'])->name('laporan.grafik');
+    Route::get('/laporan/gizi', [App\Http\Controllers\AdminController::class, 'laporanGizi'])->name('laporan.gizi');
+    Route::get('/laporan/stunting', [App\Http\Controllers\AdminController::class, 'laporanStunting'])->name('laporan.stunting');
+    Route::get('/laporan/arsip', [App\Http\Controllers\AdminController::class, 'laporanArsip'])->name('laporan.arsip');
+    Route::post('/laporan/generate', [App\Http\Controllers\AdminController::class, 'laporanGenerate'])->name('laporan.generate');
+    Route::post('/laporan/arsip/simpan', [App\Http\Controllers\AdminController::class, 'laporanArsipSimpan'])->name('laporan.arsip.simpan');
+    Route::get('/laporan/export-pdf', [App\Http\Controllers\AdminController::class, 'laporanExportPdf'])->name('laporan.export-pdf');
+    Route::get('/laporan/export-excel', [App\Http\Controllers\AdminController::class, 'laporanExportExcel'])->name('laporan.export-excel');
 });
 
 Route::middleware('auth')->group(function () {

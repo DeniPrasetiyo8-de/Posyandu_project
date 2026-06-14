@@ -66,10 +66,10 @@
                 <tbody>
                     @forelse($artikels as $index => $artikel)
                         <tr class="border-b border-gray-800 hover:bg-white/5">
-                            <td class="py-4 text-gray-300">{{ $index + 1 }}</td>
+                            <td class="py-4 text-black-300">{{ $index + 1 }}</td>
                             <td class="py-4">
                                 <span class="text-white font-semibold">{{ $artikel->judul }}</span>
-                                <p class="text-gray-400 text-sm truncate max-w-xs">{{ \Illuminate\Support\Str::limit($artikel->isi, 50) }}</p>
+                                <p class="text-black-400 text-sm truncate max-w-xs">{{ \Illuminate\Support\Str::limit($artikel->isi, 50) }}</p>
                             </td>
                             <td class="py-4">
                                 @php
@@ -78,7 +78,7 @@
                                         'ibu_hamil' => 'bg-pink-500/20 text-pink-300 border-pink-500',
                                         'imunisasi' => 'bg-purple-500/20 text-purple-300 border-purple-500',
                                     ];
-                                    $badgeColor = $badgeColors[$artikel->kategori] ?? 'bg-gray-500/20 text-gray-300';
+                                    $badgeColor = $badgeColors[$artikel->kategori] ?? 'bg-gray-500/20 text-black-300';
                                 @endphp
                                 <span class="px-3 py-1 rounded-full text-xs font-semibold border {{ $badgeColor }}">
                                     {{ $kategoriOptions[$artikel->kategori] ?? $artikel->kategori }}
@@ -88,10 +88,10 @@
                                 @if($artikel->gambar)
                                     <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="w-16 h-16 object-cover rounded-lg">
                                 @else
-                                    <span class="text-gray-500">-</span>
+                                    <span class="text-black-500">-</span>
                                 @endif
                             </td>
-                            <td class="py-4 text-gray-300">
+                            <td class="py-4 text-black-300">
                                 {{ $artikel->created_at ? \Carbon\Carbon::parse($artikel->created_at)->format('d M Y') : '-' }}
                             </td>
                             <td class="py-4">
@@ -109,7 +109,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-8 text-center text-gray-400">
+                            <td colspan="6" class="py-8 text-center text-black-400">
                                 <i class="fas fa-newspaper text-4xl mb-4 block"></i>
                                 Belum ada artikel. Klik "Tambah Artikel" untuk membuat.
                             </td>

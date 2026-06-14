@@ -11,9 +11,9 @@
   <style>
     :root {
       --blue: #2563eb;
-      --blue-2: #06b6d4;
-      --pink: #ec4899;
-      --pink-2: #f472b6;
+      --blue-2: #2563eb;
+      --pink: #2563eb;
+      --pink-2: #2563eb;
       --dark: #0f172a;
       --muted: #64748b;
       --bg: #f8fafc;
@@ -48,7 +48,7 @@
       inset: 18px auto 18px 18px;
       border-radius: 30px;
       color: white;
-      background: linear-gradient(160deg, rgba(37, 99, 235, .98), rgba(124, 58, 237, .94) 50%, rgba(236, 72, 153, .96)),
+      background: linear-gradient(160deg, rgba(13, 28, 241, 0.98), rgba(255, 18, 239, 0.96)),
                   linear-gradient(#111827, #111827);
       box-shadow: var(--shadow);
       padding: 20px;
@@ -309,9 +309,17 @@
           <span class="ico">🔍</span>
           <span>Cari Informasi<small>Data Anak & Ibu Hamil</small></span>
         </a>
-        <a href="{{ route('admin.kms') }}" class="nav-btn {{ request()->is('admin/kms*') ? 'active' : '' }}">
+<a href="{{ route('admin.laporan') }}" class="nav-btn {{ request()->is('admin/laporan*') ? 'active' : '' }}">
           <span class="ico">📊</span>
-          <span>KMS Analytics<small>Analisis Status Gizi</small></span>
+          <span>Laporan Posyandu<small>Pelaporan Data Posyandu</small></span>
+        </a>
+        <a href="{{ route('admin.kms-anak') }}" class="nav-btn {{ request()->is('admin/kms-anak*') ? 'active' : '' }}">
+          <span class="ico">👶</span>
+          <span>KMS Anak<small>Data Pemeriksaan Anak</small></span>
+        </a>
+        <a href="{{ route('admin.kms-ibu') }}" class="nav-btn {{ request()->is('admin/kms-ibu*') ? 'active' : '' }}">
+          <span class="ico">🤰</span>
+          <span>KMS Ibu<small>Pemantauan Ibu Hamil</small></span>
         </a>
         <a href="{{ route('admin.artikel') }}" class="nav-btn {{ request()->is('admin/artikel*') ? 'active' : '' }}">
           <span class="ico">📰</span>

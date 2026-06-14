@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 
-@section('title', 'KMS Analytics - Admin')
-@section('page_title', 'KMS Analytics')
-@section('page_description', 'Analisis status gizi anak.')
+@section('title', 'Laporan KMS - Admin')
+@section('page_title', 'Laporan Posyandu')
+@section('page_description', 'Laporan Posyandu.')
 
 @section('admin_content')
     <!-- Header -->

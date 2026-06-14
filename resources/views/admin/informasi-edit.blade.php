@@ -15,19 +15,31 @@
         </button>
     </div>
 
-    <!-- Child Info Card -->
+<!-- Child Info Card -->
     <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 mb-8">
-        <div class="flex items-center gap-6">
-            <div class="w-20 h-20 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 flex items-center justify-center text-white text-3xl shadow-lg">
-                <i class="fas fa-child"></i>
-            </div>
-            <div>
-                <h2 class="text-3xl font-bold text-black mb-2">{{ $child->nama }}</h2>
-                <div class="flex items-center gap-4 text-black-300">
-                    <span><i class="fas fa-calendar mr-2"></i>{{ $child->tanggal_lahir->format('d M Y') }}</span>
-                    <span><i class="fas fa-venus mr-2"></i>{{ $child->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
-                    <span><i class="fas fa-map-marker mr-2"></i>{{ $child->posyandu->nama_posyandu ?? 'N/A' }}</span>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 flex items-center justify-center text-white text-3xl shadow-lg">
+                    <i class="fas fa-child"></i>
                 </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-black mb-2">{{ $child->nama }}</h2>
+                    <div class="flex items-center gap-4 text-black-300">
+                        <span><i class="fas fa-calendar mr-2"></i>{{ $child->tanggal_lahir->format('d M Y') }}</span>
+                        <span><i class="fas fa-venus mr-2"></i>{{ $child->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
+                        <span><i class="fas fa-map-marker mr-2"></i>{{ $child->posyandu->nama_posyandu ?? 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col items-end">
+                <label class="block text-black text-sm font-bold mb-2">Status Data</label>
+                <select name="status" id="statusSelect" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white focus:border-blue-500 focus:outline-none" onchange="updateStatusData()">
+                    <option value="AKTIF" {{ ($child->status ?? 'AKTIF') == 'AKTIF' ? 'selected' : '' }}>AKTIF</option>
+                    <option value="NONAKTIF" {{ ($child->status ?? 'AKTIF') == 'NONAKTIF' ? 'selected' : '' }}>NONAKTIF</option>
+                </select>
+                <span id="statusText" class="mt-2 text-sm font-bold {{ ($child->status ?? 'AKTIF') == 'AKTIF' ? 'text-green-400' : 'text-red-400' }}">
+                    {{ ($child->status ?? 'AKTIF') == 'AKTIF' ? 'Data Aktif' : 'Data Nonaktif' }}
+                </span>
             </div>
         </div>
     </div>
@@ -95,6 +107,7 @@
     let childId = {{ $child->id }};
     let immunizations = {};
     let vitamins = {};
+    let dataStatus = '{{ $child->status ?? 'AKTIF' }}';
     
     // Initialize status from ENUM columns in database
     @foreach(\App\Models\Child::getDaftarImunisasi() as $key => $nama)
@@ -104,6 +117,22 @@
     @foreach(\App\Models\Child::getDaftarVitamin() as $key => $nama)
     vitamins['{{ $key }}'] = '{{ $child->$key ?? 'Belum' }}';
     @endforeach
+
+    function updateStatusData() {
+        const select = document.getElementById('statusSelect');
+        const statusText = document.getElementById('statusText');
+        dataStatus = select.value;
+        
+        if (dataStatus === 'AKTIF') {
+            statusText.textContent = 'Data Aktif';
+            statusText.className = 'mt-2 text-sm font-bold text-green-400';
+        } else {
+            statusText.textContent = 'Data Nonaktif';
+            statusText.className = 'mt-2 text-sm font-bold text-red-400';
+        }
+        
+        updateSaveButton();
+    }
 
     // Track changes on checkbox toggle (don't save immediately)
     document.querySelectorAll('.imunisasi-checkbox').forEach(checkbox => {
@@ -136,11 +165,17 @@
         });
     });
 
-    function updateSaveButton() {
+function updateSaveButton() {
         const saveBtn = document.getElementById('saveBtn');
         
         // Check if any changes
         let hasChanges = false;
+        
+        // Check status change
+        const originalStatus = '{{ $child->status ?? 'AKTIF' }}';
+        if (dataStatus !== originalStatus) {
+            hasChanges = true;
+        }
         
         // Check current DOM state vs original
         document.querySelectorAll('.imunisasi-checkbox').forEach(checkbox => {
@@ -179,37 +214,77 @@ function saveAllStatus() {
         
         // Using full URL paths
         const baseUrl = '/admin/informasi';
+        const statusUrl = baseUrl + '/update-status';
         const imunisasiUrl = baseUrl + '/update-imunisasi';
         const vitaminUrl = baseUrl + '/update-vitamin';
         
         console.log('Saving data:');
         console.log('- childId:', childId);
+        console.log('- status:', dataStatus);
         console.log('- all_imunisasi:', immunizations);
         console.log('- all_vitamin:', vitamins);
         
-        // Save imunisasi first
-        fetch(imunisasiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({
-                child_id: childId,
-                all_imunisasi: immunizations
+        // Save status first (AKTIF/NONAKTIF)
+        const originalStatus = '{{ $child->status ?? 'AKTIF' }}';
+        
+        // Create array of save promises
+        const savePromises = [];
+        
+        // Only save status if changed
+        if (dataStatus !== originalStatus) {
+            savePromises.push(
+                fetch(statusUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        child_id: childId,
+                        status: dataStatus
+                    })
+                })
+                .then(response => {
+                    console.log('Status response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error('Status HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Status saved:', data);
+                })
+            );
+        }
+        
+        // Save imunisasi
+        savePromises.push(
+            fetch(imunisasiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    child_id: childId,
+                    all_imunisasi: immunizations
+                })
             })
-        })
-        .then(response => {
-            console.log('Imunisasi response status:', response.status);
-            if (!response.ok) {
-                throw new Error('Imunisasi HTTP ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Imunisasi saved:', data);
-            // Save vitamins
-            return fetch(vitaminUrl, {
+            .then(response => {
+                console.log('Imunisasi response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Imunisasi HTTP ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Imunisasi saved:', data);
+            })
+        );
+        
+        // Save vitamins
+        savePromises.push(
+            fetch(vitaminUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -219,17 +294,22 @@ function saveAllStatus() {
                     child_id: childId,
                     all_vitamin: vitamins
                 })
-            });
-        })
-        .then(response => {
-            console.log('Vitamin response status:', response.status);
-            if (!response.ok) {
-                throw new Error('Vitamin HTTP ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Vitamin saved:', data);
+            })
+            .then(response => {
+                console.log('Vitamin response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Vitamin HTTP ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Vitamin saved:', data);
+            })
+        );
+        
+        // Wait for all saves to complete
+        Promise.all(savePromises)
+        .then(() => {
             // Update button to green (saved)
             saveBtn.classList.remove('bg-yellow-600', 'hover:bg-yellow-500', 'bg-gray-600');
             saveBtn.classList.add('bg-green-600', 'hover:bg-green-500');

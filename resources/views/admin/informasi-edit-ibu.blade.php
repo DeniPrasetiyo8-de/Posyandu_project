@@ -17,16 +17,28 @@
 
     <!-- Mother Info Card -->
     <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 mb-8">
-        <div class="flex items-center gap-6">
-            <div class="w-20 h-20 rounded-full bg-gradient-to-r from-pink-400 to-pink-500 flex items-center justify-center text-white text-3xl shadow-lg">
-                <i class="fas fa-female"></i>
-            </div>
-            <div>
-                <h2 class="text-3xl font-bold text-black mb-2">{{ $mother->nama_lengkap }}</h2>
-                <div class="flex items-center gap-4 text-black-300">
-                    <span><i class="fas fa-calendar mr-2"></i>{{ $mother->tanggal_kehamilan ? \Carbon\Carbon::parse($mother->tanggal_kehamilan)->format('d M Y') : 'N/A' }}</span>
-                    <span><i class="fas fa-map-marker mr-2"></i>{{ $mother->posyandu->nama_posyandu ?? 'N/A' }}</span>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-r from-pink-400 to-pink-500 flex items-center justify-center text-white text-3xl shadow-lg">
+                    <i class="fas fa-female"></i>
                 </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-black mb-2">{{ $mother->nama_lengkap }}</h2>
+                    <div class="flex items-center gap-4 text-black-300">
+                        <span><i class="fas fa-calendar mr-2"></i>{{ $mother->tanggal_kehamilan ? \Carbon\Carbon::parse($mother->tanggal_kehaminan)->format('d M Y') : 'N/A' }}</span>
+                        <span><i class="fas fa-map-marker mr-2"></i>{{ $mother->posyandu->nama_posyandu ?? 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col items-end">
+                <label class="block text-black text-sm font-bold mb-2">Status Data</label>
+                <select name="status" id="statusSelect" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white focus:border-blue-500 focus:outline-none" onchange="updateStatusData()">
+                    <option value="AKTIF" {{ ($mother->status ?? 'AKTIF') == 'AKTIF' ? 'selected' : '' }}>AKTIF</option>
+                    <option value="NONAKTIF" {{ ($mother->status ?? 'AKTIF') == 'NONAKTIF' ? 'selected' : '' }}>NONAKTIF</option>
+                </select>
+                <span id="statusText" class="mt-2 text-sm font-bold {{ ($mother->status ?? 'AKTIF') == 'AKTIF' ? 'text-green-400' : 'text-red-400' }}">
+                    {{ ($mother->status ?? 'AKTIF') == 'AKTIF' ? 'Data Aktif' : 'Data Nonaktif' }}
+                </span>
             </div>
         </div>
     </div>
@@ -36,7 +48,7 @@
         <!-- Perkembangan Kehamilan -->
         <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
             <h3 class="text-2xl font-bold text-black mb-6 flex items-center">
-                <i class="fas fa-baby-carriage text-pink-400 mr-3"></i>Perkembangan Kehamilan
+                <i class="fas fa-baby-carriage text-pink-400 mr-3"></i>Perkembangan Kehamilanan
             </h3>
             <div class="space-y-4">
                 @php
@@ -93,7 +105,7 @@
             </div>
         </div>
 
-<!-- Tablet Tambah Darah (TT) -->
+        <!-- Tablet Tambah Darah (TT) -->
         <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
             <h3 class="text-2xl font-bold text-black mb-6 flex items-center">
                 <i class="fas fa-tint text-red-400 mr-3"></i>Tablet Tambah Darah (TT)
@@ -101,7 +113,6 @@
             <div class="space-y-3">
                 @foreach(\App\Models\Mother::getDaftarTT() as $key => $nama)
                 @php
-                    // Read from individual columns (tt1, tt2, tt3, tt4, tt5)
                     $status = $mother->$key ?? 'Belum';
                 @endphp
                 <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl">
@@ -123,10 +134,10 @@
 
     <script>
     let motherId = {{ $mother->id }};
+    let dataStatus = '{{ $mother->status ?? 'AKTIF' }}';
     let trimesters = {};
     let ttStatus = {};
     
-    // Initialize status from current data
     @php
         $trimesterStatus = json_decode($mother->trimester_status ?? '{}', true);
     @endphp
@@ -134,27 +145,32 @@
     trimesters['trimester2'] = '{{ $trimesterStatus['trimester2'] ?? 'Belum' }}';
     trimesters['trimester3'] = '{{ $trimesterStatus['trimester3'] ?? 'Belum' }}';
     
-@foreach(\App\Models\Mother::getDaftarTT() as $key => $nama)
-    @php
-        // Read from individual columns (tt1, tt2, tt3, tt4, tt5)
-        $status = $mother->$key ?? 'Belum';
-    @endphp
-    ttStatus['{{ $key }}'] = '{{ $status }}';
+    @foreach(\App\Models\Mother::getDaftarTT() as $key => $nama)
+    ttStatus['{{ $key }}'] = '{{ $mother->$key ?? 'Belum' }}';
     @endforeach
 
-    // Track changes on checkbox toggle
+    function updateStatusData() {
+        const select = document.getElementById('statusSelect');
+        const statusText = document.getElementById('statusText');
+        const newStatus = select.value;
+        
+        if (newStatus !== dataStatus) {
+            dataStatus = newStatus;
+            statusText.textContent = newStatus === 'AKTIF' ? 'Data Aktif' : 'Data Nonaktif';
+            statusText.className = 'mt-2 text-sm font-bold ' + (newStatus === 'AKTIF' ? 'text-green-400' : 'text-red-400');
+            updateSaveButton();
+        }
+    }
+
     document.querySelectorAll('.trimester-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const trimester = this.dataset.trimester;
             const status = this.checked ? 'Selesai' : 'Belum';
             trimesters[trimester] = status;
-            
-            // Update status text
             const num = trimester.replace('trimester', '');
             const statusText = document.querySelector('.trimester-status-text-' + num);
             statusText.textContent = status === 'Selesai' ? 'Selesai' : 'Belum';
             statusText.className = 'text-sm font-bold trimester-status-text-' + num + ' ' + (status === 'Selesai' ? 'text-green-400' : 'text-red-400');
-            
             updateSaveButton();
         });
     });
@@ -162,38 +178,33 @@
     document.querySelectorAll('.tt-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const key = this.dataset.key;
-            const status = this.checked ? 'sudah' : 'Belum';
+            const status = this.checked ? 'Sudah' : 'Belum';
             ttStatus[key] = status;
-            
-            // Update status text
             const statusText = document.querySelector('.tt-status-text-' + key);
-            statusText.textContent = status === 'sudah' ? 'Sudah' : 'Belum';
-            statusText.className = 'ms-3 text-sm font-bold tt-status-text-' + key + ' ' + (status === 'sudah' ? 'text-green-400' : 'text-red-400');
-            
+            statusText.textContent = status === 'Sudah' ? 'Sudah' : 'Belum';
+            statusText.className = 'ms-3 text-sm font-bold tt-status-text-' + key + ' ' + (status === 'Sudah' ? 'text-green-400' : 'text-red-400');
             updateSaveButton();
         });
     });
 
     function updateSaveButton() {
         const saveBtn = document.getElementById('saveBtn');
-        
-        // Check if any changes
         let hasChanges = false;
+        
+        if (document.getElementById('statusSelect').value !== '{{ $mother->status ?? 'AKTIF' }}') {
+            hasChanges = true;
+        }
         
         document.querySelectorAll('.trimester-checkbox').forEach(checkbox => {
             const trimester = checkbox.dataset.trimester;
             const currentStatus = checkbox.checked ? 'Selesai' : 'Belum';
-            if (currentStatus !== trimesters[trimester]) {
-                hasChanges = true;
-            }
+            if (currentStatus !== trimesters[trimester]) hasChanges = true;
         });
         
         document.querySelectorAll('.tt-checkbox').forEach(checkbox => {
             const key = checkbox.dataset.key;
-            const currentStatus = checkbox.checked ? 'sudah' : 'Belum';
-            if (currentStatus !== ttStatus[key]) {
-                hasChanges = true;
-            }
+            const currentStatus = checkbox.checked ? 'Sudah' : 'Belum';
+            if (currentStatus !== ttStatus[key]) hasChanges = true;
         });
         
         if (hasChanges) {
@@ -207,21 +218,17 @@
         }
     }
 
-function saveAllStatus() {
+    function saveAllStatus() {
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.disabled = true;
         saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
         
         const csrfToken = '{{ csrf_token() }}';
         const baseUrl = '/admin/informasi';
+        const currentStatus = document.getElementById('statusSelect').value;
         
-        console.log('Testing save with:');
-        console.log('- motherId:', motherId);
-        console.log('- all_trimester:', trimesters);
-        console.log('- all_tt:', ttStatus);
-        
-        // Save trimesters first
-        fetch(baseUrl + '/update-trimester', {
+        // Simpan status data terlebih dahulu
+        fetch(baseUrl + '/update-status', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -229,19 +236,35 @@ function saveAllStatus() {
             },
             body: JSON.stringify({
                 mother_id: motherId,
-                all_trimester: trimesters
+                status: currentStatus
             })
         })
         .then(response => {
-            console.log('Trimester response status:', response.status);
-            if (!response.ok) {
-                throw new Error('Trimester HTTP ' + response.status);
-            }
+            if (!response.ok) throw new Error('Status HTTP ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Status saved:', data);
+            // Simpan trimesters
+            return fetch(baseUrl + '/update-trimester', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    mother_id: motherId,
+                    all_trimester: trimesters
+                })
+            });
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Trimester HTTP ' + response.status);
             return response.json();
         })
         .then(data => {
             console.log('Trimester saved:', data);
-            // Save TT
+            // Simpan TT
             return fetch(baseUrl + '/update-tt', {
                 method: 'POST',
                 headers: {
@@ -255,30 +278,15 @@ function saveAllStatus() {
             });
         })
         .then(response => {
-            console.log('TT response status:', response.status);
-            if (!response.ok) {
-                throw new Error('TT HTTP ' + response.status);
-            }
+            if (!response.ok) throw new Error('TT HTTP ' + response.status);
             return response.json();
         })
         .then(data => {
             console.log('TT saved:', data);
-            // Update button to green (saved)
             saveBtn.classList.remove('bg-yellow-600', 'hover:bg-yellow-500', 'bg-gray-600');
             saveBtn.classList.add('bg-green-600', 'hover:bg-green-500');
             saveBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Tersimpan';
             saveBtn.disabled = false;
-            
-            // Update local storage to reflect saved state
-            document.querySelectorAll('.trimester-checkbox').forEach(checkbox => {
-                const trimester = checkbox.dataset.trimester;
-                trimesters[trimester] = checkbox.checked ? 'Selesai' : 'Belum';
-            });
-            document.querySelectorAll('.tt-checkbox').forEach(checkbox => {
-                const key = checkbox.dataset.key;
-                ttStatus[key] = checkbox.checked ? 'sudah' : 'belum';
-            });
-            
             alert('Data berhasil disimpan!');
         })
         .catch(error => {

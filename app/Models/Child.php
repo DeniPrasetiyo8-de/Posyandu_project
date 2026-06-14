@@ -46,9 +46,10 @@ class Child extends Model
         ];
     }
     
-    protected $fillable = [
+protected $fillable = [
         'user_id',
         'posyandu_id',
+        'nik',
         'nama',
         'tanggal_lahir',
         'jenis_kelamin',
@@ -67,6 +68,7 @@ class Child extends Model
         'imunisasi_campak',
         'vitamin_a_6_11',
         'vitamin_a_12_59',
+        'status',
     ];
 
     protected $casts = [

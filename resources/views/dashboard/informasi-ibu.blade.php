@@ -123,13 +123,15 @@
     @endforeach
     @endif
 
-    <!-- Data Ibu Section -->
+<!-- Data Ibu Section -->
     <div class="mt-12">
         <div class="flex items-center justify-between mb-8">
             <h2 class="text-2xl font-bold text-gray-800">Data Ibu Terdaftar</h2>
+            @if(!isset($mothers) || $mothers->isEmpty())
             <a href="{{ route('mothers.create') }}" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
                 <i class="fas fa-plus mr-2"></i>Tambah Ibu
             </a>
+            @endif
         </div>
         
         @if(isset($mothers) && $mothers->isEmpty())

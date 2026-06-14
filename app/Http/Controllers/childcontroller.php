@@ -42,9 +42,10 @@ class ChildController extends Controller
             'posyandu_id' => 'required|exists:posyandus,id',
         ]);
 
-        $data = [
+$data = [
             'user_id' => Auth::id(),
-'posyandu_id' => $request->posyandu_id ?? null,
+            'posyandu_id' => $request->posyandu_id ?? null,
+            'nik' => $request->nik,
             'nama' => $request->nama,
             'tanggal_lahir' => $request->tanggal_lahir,
             'jenis_kelamin' => $request->jenis_kelamin,
@@ -74,7 +75,7 @@ class ChildController extends Controller
     {
         $child = Child::findOrFail($id);
 
-        $data = $request->only(['nama', 'tanggal_lahir', 'jenis_kelamin', 'berat_badan', 'tinggi_badan', 'posyandu_id']);
+$data = $request->only(['nik', 'nama', 'tanggal_lahir', 'jenis_kelamin', 'berat_badan', 'tinggi_badan', 'posyandu_id']);
 
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada

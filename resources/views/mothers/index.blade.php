@@ -10,7 +10,7 @@
                 <i class="fas fa-user-pregnant mr-4 text-pink-500 text-3xl"></i>
                 Data Ibu
             </h1>
-            <p class="text-xl text-gray-500">Kelola data ibu hamil dan menyusui untuk pemantauan KMS</p>
+            <p class="text-xl text-gray-500">Penambahan Data Ibu Hanya di lakukan oleh Ibu Hamil</p>
         </div>
         <a href="{{ route('mothers.create') }}" class="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all inline-flex items-center space-x-3">
             <i class="fas fa-plus"></i>
@@ -21,7 +21,7 @@
     @if($mothers->isEmpty())
         <div class="text-center py-20 bg-gray-100 rounded-3xl border-2 border-dashed border-gray-300">
             <i class="fas fa-user-pregnant text-7xl text-gray-400 mb-6"></i>
-            <h3 class="text-2xl font-bold text-gray-600 mb-4">Belum Ada Data Ibu</h3>
+            <h3 class="text-2xl font-bold text-gray-600 mb-4">Data Ibu Hanya untuk Ibu Hamil</h3>
             <p class="text-gray-500 mb-8 max-w-lg mx-auto">Tambahkan data ibu di menu <strong>Informasi Ibu</strong> untuk melihat data ibu dan status KMS.</p>
             <a href="{{ route('mothers.create') }}" class="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-12 py-4 rounded-full font-bold text-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all inline-flex items-center space-x-3">
                 <i class="fas fa-arrow-right"></i>

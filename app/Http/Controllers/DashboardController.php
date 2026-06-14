@@ -107,15 +107,23 @@ class DashboardController extends Controller
         return response()->json(['success' => false, 'message' => 'Mother not found'], 404);
     }
 
-    public function kms()
+public function kms()
     {
         $children = Auth::user()->children()->with('healthRecords')->get();
-        $mothers = Auth::user()->mothers()->get();
+        $mothers = Auth::user()->mothers()->with('posyandu')->get();
         $healthRecords = HealthRecord::whereHas('child', function($query) {
             $query->where('user_id', Auth::id());
         })->with('child')->latest()->get();
 
-        return view('dashboard.kms', compact('children', 'mothers', 'healthRecords'));
+        // Get MotherHealthRecord data for each mother
+        $motherHealthRecords = [];
+        foreach ($mothers as $mother) {
+            $motherHealthRecords[$mother->id] = \App\Models\MotherHealthRecord::where('mother_id', $mother->id)
+                ->orderBy('bulan_ke', 'asc')
+                ->get();
+        }
+
+        return view('dashboard.kms', compact('children', 'mothers', 'healthRecords', 'motherHealthRecords'));
     }
 
     public function kader()

@@ -101,17 +101,17 @@
             <div id="kmsResultContainer"></div>
         </div>
 
-        <div class="bg-slate-800/50 backdrop-blur-sm rounded-3xl border border-slate-700 overflow-hidden">
+<div class="bg-slate-800/50 backdrop-blur-sm rounded-3xl border border-slate-700 overflow-hidden">
             <div class="p-6 border-b border-slate-700 bg-gradient-to-r from-slate-900 to-transparent">
                 <h3 class="text-2xl font-bold text-white flex items-center">
                     <i class="fas fa-table mr-3 text-purple-400"></i>
-                    Riwayat Pemeriksaan Terbaru
+                    <span id="riwayatTitle">Riwayat Pemeriksaan Terbaru</span>
                 </h3>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead class="bg-slate-900/50">
-                        <tr>
+                        <tr id="tableHeader">
                             <th class="p-6 text-left text-slate-300 font-bold text-lg">Tanggal</th>
                             <th class="p-6 text-left text-slate-300 font-bold text-lg">Berat (kg)</th>
                             <th class="p-6 text-left text-slate-300 font-bold text-lg">Tinggi (cm)</th>
@@ -288,10 +288,11 @@
         // VARIABEL GLOBAL
         // ============================================
         
-        let growthChart, giziChart;
+let growthChart, giziChart;
         let currentChildData = null;
         let currentKmsType = 'anak';
         const mothers = @json($mothers ?? collect([]));
+        const motherHealthRecords = @json($motherHealthRecords ?? []);
 
         // ============================================
         // EVENT LISTENERS
@@ -318,13 +319,15 @@
         // FUNGSI TAMPILKAN KMS (SWITCH IBU/ANAK)
         // ============================================
         
-        function showKms(type) {
+function showKms(type) {
             currentKmsType = type;
             const btnAnak = document.getElementById('btnAnak');
             const btnIbu = document.getElementById('btnIbu');
             const childSection = document.getElementById('childSelectorSection');
             const motherSection = document.getElementById('motherSelectorSection');
             const kmsIbuCard = document.getElementById('kmsIbuCard');
+            const tableHeader = document.getElementById('tableHeader');
+            const riwayatTitle = document.getElementById('riwayatTitle');
             
             if (type === 'anak') {
                 btnAnak.className = 'flex-1 p-4 rounded-2xl font-bold text-lg transition-all bg-gradient-to-r from-blue-500 to-indigo-600 text-white';
@@ -336,6 +339,16 @@
                 // Update chart title
                 document.querySelector('.grid.lg\\:grid-cols-2 h3:first-child').innerHTML = '<i class="fas fa-chart-line mr-3 text-blue-400"></i>Perkembangan BB & TB';
                 
+                // Update table header for Anak
+                riwayatTitle.textContent = 'Riwayat Pemeriksaan Terbaru';
+                tableHeader.innerHTML = `
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">Tanggal</th>
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">Berat (kg)</th>
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">Tinggi (cm)</th>
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">BB/U</th>
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">Status</th>
+                `;
+                
                 updateAnakCharts();
             } else {
                 btnAnak.className = 'flex-1 p-4 rounded-2xl font-bold text-lg transition-all bg-slate-700 text-slate-300 hover:from-blue-500 hover:to-indigo-600 hover:text-white';
@@ -346,6 +359,16 @@
                 
                 // Update chart title
                 document.querySelector('.grid.lg\\:grid-cols-2 h3:first-child').innerHTML = '<i class="fas fa-chart-line mr-3 text-pink-400"></i>Perkembangan Kehamilan';
+                
+                // Update table header for Ibu (BB, LILA, Tekanan Darah)
+                riwayatTitle.textContent = 'Riwayat Pemeriksaan Terbaru';
+                tableHeader.innerHTML = `
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">Bulan Ke</th>
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">Berat Badan (kg)</th>
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">LILA (cm)</th>
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">Tekanan Darah</th>
+                    <th class="p-6 text-left text-slate-300 font-bold text-lg">Catatan</th>
+                `;
                 
                 showIbuCharts();
             }
@@ -716,62 +739,58 @@ statuses.forEach(s => {
                 </div>
             `;
 
-            // Tampilkan KMS Card untuk Ibu
+// Tampilkan KMS Card untuk Ibu
             document.getElementById('kmsResultContainer').innerHTML = getIbuKMSCard(kmsResult, namaIbu);
 
-            // Update table dengan perkembangan kehamilan
+            // Get the selected mother's health records from PHP data
+            const motherId = parseInt(selectedOption.value);
+            const records = motherHealthRecords[motherId] || [];
+            
+            // Generate table rows from MotherHealthRecord data (Bulan 1-9)
             let tableRows = '';
             
-            // Header info
-            tableRows += `
-                <tr class="bg-slate-900/30">
-                    <td colspan="5" class="p-4 text-center text-lg font-bold text-pink-400">
-                        <i class="fas fa-user-pregnant mr-2"></i>
-                        ${namaIbu} - Minggu Ke-${kmsResult.mingguKehamilan} (Trimester ${kmsResult.trimester})
-                    </td>
-                </tr>
-            `;
-            
-            // Data rows per minggu
-            for (let i = 0; i <= Math.min(kmsResult.mingguKehamilan, 40); i++) {
-                const isCurrentWeek = i === kmsResult.mingguKehamilan;
-                
-                // Calculate ideal weight for this week
-                let gain, beratIdealMinggu;
-                if (i <= 12) {
-                    gain = i * 0.1;
-                } else if (i <= 26) {
-                    gain = 1.2 + ((i - 12) * 0.5);
-                } else {
-                    gain = 1.2 + 7 + ((i - 26) * 0.5);
-                }
-                beratIdealMinggu = kmsResult.beratBadanAwal + gain;
-                
-                // Determine status for this week
-                let statusBadge = '-';
-                if (isCurrentWeek) {
-                    if (kmsResult.statusType === 'success') {
-                        statusBadge = '<span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full font-bold text-sm border border-green-500/30">Baik</span>';
-                    } else if (kmsResult.statusType === 'danger') {
-                        statusBadge = '<span class="px-3 py-1 bg-red-500/20 text-red-400 rounded-full font-bold text-sm border border-red-500/30">Periksa</span>';
-                    } else {
-                        statusBadge = '<span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full font-bold text-sm border border-yellow-500/30">Periksa</span>';
-                    }
-                }
-                
-                tableRows += `
-                    <tr class="hover:bg-slate-800/50 ${isCurrentWeek ? 'bg-pink-500/10' : ''}">
-                        <td class="p-4 ${isCurrentWeek ? 'text-pink-400 font-bold' : 'text-slate-300'}">
-                            ${isCurrentWeek ? '<i class="fas fa-star mr-1"></i>' : ''}Minggu ke-${i}
+            if (records.length === 0) {
+                // No records yet - show message
+                tableRows = `
+                    <tr>
+                        <td colspan="5" class="p-8 text-center text-slate-400">
+                            <i class="fas fa-info-circle text-3xl mb-4 text-yellow-400"></i>
+                            <p>Belum ada riwayat pemeriksaan.</p>
+                            <p class="text-sm mt-2">Data KMS akan muncul setelah admin menginput pemeriksaan.</p>
                         </td>
-                        <td class="p-4 font-mono text-lg font-bold text-green-400">${beratIdealMinggu.toFixed(1)} kg</td>
-                        <td class="p-4 font-mono text-blue-400">-</td>
-                        <td class="p-4 font-mono ${isCurrentWeek ? 'text-pink-400 font-bold' : 'text-slate-400'}">
-                            ${isCurrentWeek ? beratBadan : '-'}
-                        </td>
-                        <td class="p-4">${statusBadge}</td>
                     </tr>
                 `;
+            } else {
+                // Header info
+                tableRows += `
+                    <tr class="bg-slate-900/30">
+                        <td colspan="5" class="p-4 text-center text-lg font-bold text-pink-400">
+                            <i class="fas fa-user-pregnant mr-2"></i>
+                            ${namaIbu} - Riwayat Pemeriksaan (Bulan 1-9)
+                        </td>
+                    </tr>
+                `;
+                
+                // Data rows per bulan dari MotherHealthRecord
+                records.forEach((record, index) => {
+                    const bulanKe = record.bulan_ke || '-';
+                    const beratBadan = record.berat_badan ? record.berat_badan + ' kg' : '-';
+                    const lila = record.lila ? record.lila + ' cm' : '-';
+                    const tekananDarah = record.tekanan_darah ? record.tekanan_darah + ' mmHg' : '-';
+                    const catatan = record.catatan || '-';
+                    
+                    tableRows += `
+                        <tr class="hover:bg-slate-800/50">
+                            <td class="p-4 text-pink-400 font-bold font-mono text-lg">
+                                <i class="fas fa-calendar-alt mr-2"></i>Bulan ke-${bulanKe}
+                            </td>
+                            <td class="p-4 font-mono text-lg font-bold text-green-400">${beratBadan}</td>
+                            <td class="p-4 font-mono text-lg text-blue-400">${lila}</td>
+                            <td class="p-4 font-mono text-lg text-red-400">${tekananDarah}</td>
+                            <td class="p-4 text-slate-300">${catatan}</td>
+                        </tr>
+                    `;
+                });
             }
             
             document.getElementById('recordsTableBody').innerHTML = tableRows;

@@ -10,9 +10,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([
+$this->call([
             PosyanduSeeder::class,
             ArticleSeeder::class,
+            RwAccessSeeder::class,
         ]);
 
         // Buat admin user fixed
